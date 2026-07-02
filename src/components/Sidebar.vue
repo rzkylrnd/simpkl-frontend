@@ -1,0 +1,41 @@
+<template>
+  <aside :class="['w-64 bg-blue-700 text-white flex flex-col transition-colors duration-300', darkMode ? 'bg-gray-800' : 'bg-blue-700']">
+    <div class="p-4 text-lg font-bold border-b border-white/20">SIMPKL</div>
+    <nav class="flex-1 p-2 space-y-1">
+      <router-link v-for="item in filteredMenu" :key="item.path" :to="item.path"
+        class="flex items-center gap-2 px-3 py-2 rounded hover:bg-white/10"
+        :class="{ 'bg-white/20': $route.path === item.path }">
+        <span v-html="item.icon"></span>
+        {{ item.label }}
+      </router-link>
+    </nav>
+  </aside>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import { useAuthStore } from '../stores/auth'
+import { useThemeStore } from '../stores/theme'
+
+const authStore = useAuthStore()
+const themeStore = useThemeStore()
+const darkMode = computed(() => themeStore.darkMode)
+
+const allMenu = [
+  { path: '/', label: 'Dashboard', icon: '&#9632;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/users', label: 'Users', icon: '&#9644;', roles: ['admin'] },
+  { path: '/sekolah', label: 'Sekolah', icon: '&#9644;', roles: ['admin'] },
+  { path: '/tempat-pkl', label: 'Tempat PKL', icon: '&#9644;', roles: ['admin'] },
+  { path: '/siswa', label: 'Siswa', icon: '&#9644;', roles: ['admin'] },
+  { path: '/penempatan', label: 'Penempatan', icon: '&#9644;', roles: ['admin'] },
+  { path: '/presensi', label: 'Presensi', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/jurnal', label: 'Jurnal', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/laporan', label: 'Laporan', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/penilaian', label: 'Penilaian', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/profile', label: 'Profile', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+]
+
+const filteredMenu = computed(() => {
+  return allMenu.filter(item => item.roles.includes(authStore.user?.role))
+})
+</script>

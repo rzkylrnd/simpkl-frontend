@@ -1,11 +1,20 @@
-<script setup></script>
-
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <router-view />
 </template>
 
-<style scoped></style>
+<script setup>
+import { watch } from 'vue'
+import { useThemeStore } from './stores/theme'
+import { useAuthStore } from './stores/auth'
+
+const themeStore = useThemeStore()
+const authStore = useAuthStore()
+
+watch(() => themeStore.darkMode, (val) => {
+  document.documentElement.classList.toggle('dark', val)
+}, { immediate: true })
+
+if (authStore.token) {
+  authStore.fetchUser()
+}
+</script>
