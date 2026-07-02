@@ -3,10 +3,11 @@
     <div class="p-4 text-lg font-bold border-b border-white/20">SIMPKL</div>
     <nav class="flex-1 p-2 space-y-1">
       <router-link v-for="item in filteredMenu" :key="item.path" :to="item.path"
-        class="flex items-center gap-2 px-3 py-2 rounded hover:bg-white/10"
-        :class="{ 'bg-white/20': $route.path === item.path }">
-        <span v-html="item.icon"></span>
-        {{ item.label }}
+        class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10 transition-colors"
+        :class="{ 'bg-white/20': $route.path === item.path }"
+        @click="$emit('close')">
+        <span class="w-5 text-center" v-html="item.icon"></span>
+        <span>{{ item.label }}</span>
       </router-link>
     </nav>
   </aside>
@@ -16,6 +17,8 @@
 import { computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '../stores/theme'
+
+defineEmits(['close'])
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
