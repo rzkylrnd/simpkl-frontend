@@ -24,8 +24,8 @@
             <td class="p-2 max-w-[150px] truncate">{{ item.hasil || '-' }}</td>
             <td class="p-2 max-w-[150px] truncate">{{ item.kendala || '-' }}</td>
             <td class="p-3 text-center whitespace-nowrap">
-              <button @click="edit(item)" class="text-blue-600 hover:underline mr-2">Edit</button>
-              <button @click="hapus(item.id_jurnal)" class="text-red-600 hover:underline">Hapus</button>
+              <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+              <button @click="hapus(item.id_jurnal)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
@@ -38,11 +38,11 @@
         <form @submit.prevent="simpan">
           <div class="mb-3">
             <label class="block text-sm mb-1">Siswa</label>
-            <select v-if="!form.id" v-model="form.id_siswa" required class="w-full border px-3 py-2 rounded">
+            <select v-if="!form.id" v-model="form.id_siswa" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
               <option value="">-- Pilih --</option>
               <option v-for="s in siswa" :key="s.id_siswa" :value="s.id_siswa">{{ s.user?.nama }}</option>
             </select>
-            <input v-else :value="selectedSiswaNama" disabled class="w-full border px-3 py-2 rounded bg-gray-100" />
+            <input v-else :value="selectedSiswaNama" disabled :class="['w-full border px-3 py-2 rounded bg-gray-100', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100']" />
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Tanggal</label>
@@ -50,15 +50,15 @@
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Kegiatan</label>
-            <textarea v-model="form.kegiatan" required class="w-full border px-3 py-2 rounded"></textarea>
+            <textarea v-model="form.kegiatan" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"></textarea>
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Hasil</label>
-            <textarea v-model="form.hasil" class="w-full border px-3 py-2 rounded"></textarea>
+            <textarea v-model="form.hasil" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"></textarea>
           </div>
           <div class="mb-4">
             <label class="block text-sm mb-1">Kendala</label>
-            <textarea v-model="form.kendala" class="w-full border px-3 py-2 rounded"></textarea>
+            <textarea v-model="form.kendala" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"></textarea>
           </div>
           <div class="flex gap-2 justify-end">
             <button type="button" @click="batal" class="px-4 py-2 border rounded hover:bg-gray-100">Batal</button>
@@ -134,6 +134,7 @@ async function hapus(id) {
   }
 }
 </script>
+
 
 
 

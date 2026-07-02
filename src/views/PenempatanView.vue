@@ -26,8 +26,8 @@
             <td class="p-3">{{ item.tanggal_mulai }}</td>
             <td class="p-3">{{ item.tanggal_selesai }}</td>
             <td class="p-3 text-center whitespace-nowrap">
-              <button @click="edit(item)" class="text-blue-600 hover:underline mr-2">Edit</button>
-              <button @click="hapus(item.id_penempatan)" class="text-red-600 hover:underline">Hapus</button>
+              <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+              <button @click="hapus(item.id_penempatan)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
@@ -40,29 +40,29 @@
         <form @submit.prevent="simpan">
           <div class="mb-3">
             <label class="block text-sm mb-1">Siswa</label>
-            <select v-if="!form.id" v-model="form.id_siswa" required class="w-full border px-3 py-2 rounded">
+            <select v-if="!form.id" v-model="form.id_siswa" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
               <option value="">-- Pilih --</option>
               <option v-for="s in siswa" :key="s.id_siswa" :value="s.id_siswa">{{ s.user?.nama }}</option>
             </select>
-            <input v-else :value="selectedSiswaNama" disabled class="w-full border px-3 py-2 rounded bg-gray-100" />
+            <input v-else :value="selectedSiswaNama" disabled :class="['w-full border px-3 py-2 rounded bg-gray-100', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100']" />
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Tempat PKL</label>
-            <select v-model="form.id_tempat_pkl" required class="w-full border px-3 py-2 rounded">
+            <select v-model="form.id_tempat_pkl" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
               <option value="">-- Pilih --</option>
               <option v-for="t in tempatPkl" :key="t.id_tempat_pkl" :value="t.id_tempat_pkl">{{ t.nama_perusahaan }}</option>
             </select>
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Guru Pembimbing</label>
-            <select v-model="form.id_guru_pembimbing" class="w-full border px-3 py-2 rounded">
+            <select v-model="form.id_guru_pembimbing" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
               <option value="">-- Optional --</option>
               <option v-for="g in guru" :key="g.id" :value="g.id">{{ g.nama }}</option>
             </select>
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Pembimbing Industri</label>
-            <select v-model="form.id_pembimbing_industri" class="w-full border px-3 py-2 rounded">
+            <select v-model="form.id_pembimbing_industri" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
               <option value="">-- Optional --</option>
               <option v-for="p in industri" :key="p.id" :value="p.id">{{ p.nama }}</option>
             </select>
@@ -162,6 +162,7 @@ async function hapus(id) {
   }
 }
 </script>
+
 
 
 

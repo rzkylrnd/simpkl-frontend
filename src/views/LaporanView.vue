@@ -34,8 +34,8 @@
                 <button @click="validasi(item.id_laporan, 'tidak_valid')" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Tidak Valid</button>
               </template>
               <template v-else>
-                <button @click="edit(item)" class="text-blue-600 hover:underline mr-2">Edit</button>
-                <button @click="hapus(item.id_laporan)" class="text-red-600 hover:underline">Hapus</button>
+                <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                <button @click="hapus(item.id_laporan)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
               </template>
             </td>
           </tr>
@@ -49,23 +49,23 @@
         <form @submit.prevent="simpan">
           <div class="mb-3">
             <label class="block text-sm mb-1">Siswa</label>
-            <select v-if="!form.id" v-model="form.id_siswa" required class="w-full border px-3 py-2 rounded">
+            <select v-if="!form.id" v-model="form.id_siswa" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
               <option value="">-- Pilih --</option>
               <option v-for="s in siswa" :key="s.id_siswa" :value="s.id_siswa">{{ s.user?.nama }}</option>
             </select>
-            <input v-else :value="selectedSiswaNama" disabled class="w-full border px-3 py-2 rounded bg-gray-100" />
+            <input v-else :value="selectedSiswaNama" disabled :class="['w-full border px-3 py-2 rounded bg-gray-100', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100']" />
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Judul Laporan</label>
-            <input v-model="form.judul_laporan" type="text" required class="w-full border px-3 py-2 rounded" />
+            <input v-model="form.judul_laporan" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">File Path</label>
-            <input v-model="form.file_path" type="text" required class="w-full border px-3 py-2 rounded" />
+            <input v-model="form.file_path" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
           <div class="mb-4">
             <label class="block text-sm mb-1">Catatan</label>
-            <textarea v-model="form.catatan" class="w-full border px-3 py-2 rounded"></textarea>
+            <textarea v-model="form.catatan" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"></textarea>
           </div>
           <div class="flex gap-2 justify-end">
             <button type="button" @click="batal" class="px-4 py-2 border rounded hover:bg-gray-100">Batal</button>
@@ -143,6 +143,7 @@ async function hapus(id) {
   }
 }
 </script>
+
 
 
 

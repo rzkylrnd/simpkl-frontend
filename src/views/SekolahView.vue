@@ -20,8 +20,8 @@
             <td class="p-3">{{ item.alamat }}</td>
             <td class="p-3">{{ item.telp }}</td>
             <td class="p-3 text-center whitespace-nowrap">
-              <button @click="edit(item)" class="text-blue-600 hover:underline mr-2">Edit</button>
-              <button @click="hapus(item.id_sekolah)" class="text-red-600 hover:underline">Hapus</button>
+              <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+              <button @click="hapus(item.id_sekolah)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
@@ -34,7 +34,7 @@
         <form @submit.prevent="simpan">
           <div class="mb-3">
             <label class="block text-sm mb-1">Nama Sekolah</label>
-            <input v-model="form.nama_sekolah" type="text" required class="w-full border px-3 py-2 rounded" />
+            <input v-model="form.nama_sekolah" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Alamat</label>
