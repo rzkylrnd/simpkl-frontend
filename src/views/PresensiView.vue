@@ -2,7 +2,7 @@
   <div>
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Data Presensi</h3>
-      <button v-if="authStore.isSiswa" @click="showForm = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tambah</button>
+      <button v-if="authStore.isSiswa" @click="openForm" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tambah</button>
     </div>
     <div :class="['rounded shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white']">
       <table class="w-full text-sm">
@@ -72,7 +72,9 @@
           </div>
           <div class="flex gap-2 justify-end">
             <button type="button" @click="batal" class="px-4 py-2 border rounded hover:bg-gray-100">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
+            <button type="submit" :disabled="loading" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
+              <i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? 'Menyimpan...' : 'Simpan' }}
+            </button>
           </div>
         </form>
       </div>
@@ -93,6 +95,7 @@ const darkMode = computed(() => themeStore.darkMode)
 const data = ref([])
 const siswa = ref([])
 const showForm = ref(false)
+const loading = ref(false)
 const form = ref({ id: null, id_siswa: '', tanggal: '', waktu_datang: '', waktu_pulang: '', catatan: '' })
 
 const selectedSiswaNama = computed(() => {
@@ -114,6 +117,11 @@ async function loadSiswa() {
   } catch (e) {}
 }
 
+function openForm() {
+  form.value = { id: null, id_siswa: authStore.user?.siswa?.id_siswa || '', tanggal: '', waktu_datang: '', waktu_pulang: '', catatan: '' }
+  showForm.value = true
+}
+
 function edit(item) {
   form.value = { id: item.id_presensi, id_siswa: item.id_siswa, tanggal: item.tanggal, waktu_datang: item.waktu_datang || '', waktu_pulang: item.waktu_pulang || '', catatan: item.catatan || '' }
   showForm.value = true
@@ -125,17 +133,23 @@ function batal() {
 }
 
 async function simpan() {
-  const payload = { ...form.value }
-  if (!payload.waktu_datang) delete payload.waktu_datang
-  if (!payload.waktu_pulang) delete payload.waktu_pulang
-  if (!payload.catatan) delete payload.catatan
-  if (form.value.id) {
-    await axios.put(`/api/presensi/${form.value.id}`, payload)
-  } else {
-    await axios.post('/api/presensi', payload)
+  if (loading.value) return
+  loading.value = true
+  try {
+    const payload = { ...form.value }
+    if (!payload.waktu_datang) delete payload.waktu_datang
+    if (!payload.waktu_pulang) delete payload.waktu_pulang
+    if (!payload.catatan) delete payload.catatan
+    if (form.value.id) {
+      await axios.put(`/api/presensi/${form.value.id}`, payload)
+    } else {
+      await axios.post('/api/presensi', payload)
+    }
+    batal()
+    load()
+  } finally {
+    loading.value = false
   }
-  batal()
-  load()
 }
 
 async function validasi(id, status) {

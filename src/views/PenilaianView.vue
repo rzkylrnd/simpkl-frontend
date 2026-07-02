@@ -66,7 +66,7 @@
           </div>
           <div class="flex gap-2 justify-end">
             <button type="button" @click="batal" class="px-4 py-2 border rounded hover:bg-gray-100">Batal</button>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
+            <button type="submit" :disabled="loading" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"><i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? "Menyimpan..." : "Simpan" }}</button>
           </div>
         </form>
       </div>
@@ -84,6 +84,7 @@ const authStore = useAuthStore()
 const themeStore = useThemeStore()
 const darkMode = computed(() => themeStore.darkMode)
 
+const loading = ref(false)
 const data = ref([])
 const siswa = ref([])
 const guru = ref([])
@@ -142,6 +143,7 @@ async function hapus(id) {
   }
 }
 </script>
+
 
 
 
