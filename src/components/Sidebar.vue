@@ -22,17 +22,17 @@ const themeStore = useThemeStore()
 const darkMode = computed(() => themeStore.darkMode)
 
 const allMenu = [
-  { path: '/', label: 'Dashboard', icon: '&#9632;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
-  { path: '/users', label: 'Users', icon: '&#9644;', roles: ['admin'] },
-  { path: '/sekolah', label: 'Sekolah', icon: '&#9644;', roles: ['admin'] },
-  { path: '/tempat-pkl', label: 'Tempat PKL', icon: '&#9644;', roles: ['admin'] },
-  { path: '/siswa', label: 'Siswa', icon: '&#9644;', roles: ['admin'] },
-  { path: '/penempatan', label: 'Penempatan', icon: '&#9644;', roles: ['admin'] },
-  { path: '/presensi', label: 'Presensi', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
-  { path: '/jurnal', label: 'Jurnal', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
-  { path: '/laporan', label: 'Laporan', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
-  { path: '/penilaian', label: 'Penilaian', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
-  { path: '/profile', label: 'Profile', icon: '&#9644;', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/', label: 'Dashboard', icon: '<i class="fas fa-tachometer-alt"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/users', label: 'Users', icon: '<i class="fas fa-users"></i>', roles: ['admin'] },
+  { path: '/sekolah', label: 'Sekolah', icon: '<i class="fas fa-school"></i>', roles: ['admin'] },
+  { path: '/tempat-pkl', label: 'Tempat PKL', icon: '<i class="fas fa-building"></i>', roles: ['admin'] },
+  { path: '/siswa', label: 'Siswa', icon: '<i class="fas fa-user-graduate"></i>', roles: ['admin'] },
+  { path: '/penempatan', label: 'Penempatan', icon: '<i class="fas fa-map-marker-alt"></i>', roles: ['admin'] },
+  { path: '/presensi', label: 'Presensi', icon: '<i class="fas fa-clipboard-check"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/jurnal', label: 'Jurnal', icon: '<i class="fas fa-book"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/laporan', label: 'Laporan', icon: '<i class="fas fa-file-alt"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/penilaian', label: 'Penilaian', icon: '<i class="fas fa-star"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/profile', label: 'Profile', icon: '<i class="fas fa-user"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
 ]
 
 const filteredMenu = computed(() => {
