@@ -46,14 +46,7 @@
       <div :class="['p-6 rounded shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'bg-white']">
         <h3 class="text-lg font-bold mb-4">{{ form.id ? 'Edit' : 'Tambah' }} Presensi</h3>
         <form @submit.prevent="simpan">
-          <div class="mb-3">
-            <label class="block text-sm mb-1">Siswa</label>
-            <select v-if="!form.id" v-model="form.id_siswa" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
-              <option value="">-- Pilih --</option>
-              <option v-for="s in siswa" :key="s.id_siswa" :value="s.id_siswa">{{ s.user?.nama }}</option>
-            </select>
-            <input v-else :value="selectedSiswaNama" disabled :class="['w-full border px-3 py-2 rounded bg-gray-100', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100']" />
-          </div>
+          <input v-model="form.id_siswa" type="hidden" />
           <div class="mb-3">
             <label class="block text-sm mb-1">Tanggal</label>
             <input v-model="form.tanggal" type="date" required class="w-full border px-3 py-2 rounded" />
@@ -83,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useThemeStore } from '../stores/theme'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
@@ -95,28 +88,19 @@ const notif = useNotificationStore()
 const darkMode = computed(() => themeStore.darkMode)
 
 const data = ref([])
-const siswa = ref([])
 const showForm = ref(false)
 const loading = ref(false)
 const form = ref({ id: null, id_siswa: '', tanggal: '', waktu_datang: '', waktu_pulang: '', catatan: '' })
 
-const selectedSiswaNama = computed(() => {
-  const s = siswa.value.find(x => x.id_siswa == form.value.id_siswa)
-  return s?.user?.nama || ''
-})
-
-onMounted(() => { load(); if (authStore.isAdmin || authStore.isSiswa) loadSiswa() })
+onMounted(() => { load() })
 
 async function load() {
-  const res = await axios.get('/api/presensi')
-  data.value = res.data.data
-}
-
-async function loadSiswa() {
   try {
-    const res = await axios.get('/api/siswa')
-    siswa.value = res.data.data
-  } catch (e) {}
+    const res = await axios.get('/api/presensi')
+    data.value = res.data.data
+  } catch (e) {
+    notif.showMessage('Gagal memuat data', 'error')
+  }
 }
 
 function openForm() {
