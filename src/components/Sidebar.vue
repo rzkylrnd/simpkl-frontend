@@ -10,6 +10,15 @@
         <span>{{ item.label }}</span>
       </router-link>
     </nav>
+    <div class="p-4 border-t border-white/20 text-sm">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-user-circle text-xl"></i>
+        <div class="truncate">
+          <p class="truncate font-medium">{{ authStore.user?.nama }}</p>
+          <p class="text-xs opacity-75 truncate">{{ authStore.user?.role }}</p>
+        </div>
+      </div>
+    </div>
   </aside>
 </template>
 
