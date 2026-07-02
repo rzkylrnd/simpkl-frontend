@@ -88,9 +88,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useThemeStore } from '../stores/theme'
+import { useNotificationStore } from '../stores/notification'
 import axios from 'axios'
 
 const themeStore = useThemeStore()
+const notif = useNotificationStore()
 const darkMode = computed(() => themeStore.darkMode)
 
 const loading = ref(false)
@@ -110,8 +112,12 @@ const selectedSiswaNama = computed(() => {
 onMounted(() => { load(); loadOptions() })
 
 async function load() {
-  const res = await axios.get('/api/penempatan')
-  data.value = res.data.data
+  try {
+    const res = await axios.get('/api/penempatan')
+    data.value = res.data.data
+  } catch (e) {
+    notif.showMessage('Gagal memuat data', 'error')
+  }
 }
 
 async function loadOptions() {
@@ -144,22 +150,35 @@ function batal() {
 }
 
 async function simpan() {
-  const payload = { ...form.value }
-  if (!payload.id_guru_pembimbing) payload.id_guru_pembimbing = null
-  if (!payload.id_pembimbing_industri) payload.id_pembimbing_industri = null
-  if (form.value.id) {
-    await axios.put(`/api/penempatan/${form.value.id}`, payload)
-  } else {
-    await axios.post('/api/penempatan', payload)
+  if (loading.value) return
+  loading.value = true
+  try {
+    const payload = { ...form.value }
+    if (!payload.id_guru_pembimbing) payload.id_guru_pembimbing = null
+    if (!payload.id_pembimbing_industri) payload.id_pembimbing_industri = null
+    if (form.value.id) {
+      await axios.put(`/api/penempatan/${form.value.id}`, payload)
+    } else {
+      await axios.post('/api/penempatan', payload)
+    }
+    batal()
+    load()
+    notif.showMessage('Penempatan berhasil disimpan')
+  } catch (e) {
+    notif.showMessage(e.response?.data?.message || 'Gagal menyimpan', 'error')
+  } finally {
+    loading.value = false
   }
-  batal()
-  load()
 }
 
 async function hapus(id) {
-  if (confirm('Yakin hapus?')) {
+  if (!confirm('Yakin hapus?')) return
+  try {
     await axios.delete(`/api/penempatan/${id}`)
     load()
+    notif.showMessage('Penempatan berhasil dihapus')
+  } catch (e) {
+    notif.showMessage('Gagal menghapus', 'error')
   }
 }
 </script>

@@ -74,10 +74,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { useThemeStore } from '../stores/theme'
 import { useAuthStore } from '../stores/auth'
+import { useNotificationStore } from '../stores/notification'
 import axios from 'axios'
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+const notif = useNotificationStore()
 const darkMode = computed(() => themeStore.darkMode)
 
 const loading = ref(false)
@@ -94,8 +96,12 @@ const selectedSiswaNama = computed(() => {
 onMounted(() => { load(); if (authStore.isAdmin || authStore.isSiswa) loadSiswa() })
 
 async function load() {
-  const res = await axios.get('/api/jurnal')
-  data.value = res.data.data
+  try {
+    const res = await axios.get('/api/jurnal')
+    data.value = res.data.data
+  } catch (e) {
+    notif.showMessage('Gagal memuat data', 'error')
+  }
 }
 
 async function loadSiswa() {
@@ -121,22 +127,35 @@ function batal() {
 }
 
 async function simpan() {
-  const payload = { ...form.value }
-  if (!payload.hasil) delete payload.hasil
-  if (!payload.kendala) delete payload.kendala
-  if (form.value.id) {
-    await axios.put(`/api/jurnal/${form.value.id}`, payload)
-  } else {
-    await axios.post('/api/jurnal', payload)
+  if (loading.value) return
+  loading.value = true
+  try {
+    const payload = { ...form.value }
+    if (!payload.hasil) delete payload.hasil
+    if (!payload.kendala) delete payload.kendala
+    if (form.value.id) {
+      await axios.put(`/api/jurnal/${form.value.id}`, payload)
+    } else {
+      await axios.post('/api/jurnal', payload)
+    }
+    batal()
+    load()
+    notif.showMessage('Jurnal berhasil disimpan')
+  } catch (e) {
+    notif.showMessage(e.response?.data?.message || 'Gagal menyimpan', 'error')
+  } finally {
+    loading.value = false
   }
-  batal()
-  load()
 }
 
 async function hapus(id) {
-  if (confirm('Yakin hapus?')) {
+  if (!confirm('Yakin hapus?')) return
+  try {
     await axios.delete(`/api/jurnal/${id}`)
     load()
+    notif.showMessage('Jurnal berhasil dihapus')
+  } catch (e) {
+    notif.showMessage('Gagal menghapus', 'error')
   }
 }
 </script>

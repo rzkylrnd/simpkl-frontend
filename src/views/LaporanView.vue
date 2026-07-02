@@ -81,10 +81,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { useThemeStore } from '../stores/theme'
 import { useAuthStore } from '../stores/auth'
+import { useNotificationStore } from '../stores/notification'
 import axios from 'axios'
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+const notif = useNotificationStore()
 const darkMode = computed(() => themeStore.darkMode)
 
 const loading = ref(false)
@@ -101,8 +103,12 @@ const selectedSiswaNama = computed(() => {
 onMounted(() => { load(); if (authStore.isAdmin || authStore.isSiswa) loadSiswa() })
 
 async function load() {
-  const res = await axios.get('/api/laporan')
-  data.value = res.data.data
+  try {
+    const res = await axios.get('/api/laporan')
+    data.value = res.data.data
+  } catch (e) {
+    notif.showMessage('Gagal memuat data', 'error')
+  }
 }
 
 async function loadSiswa() {
@@ -123,24 +129,42 @@ function batal() {
 }
 
 async function simpan() {
-  if (form.value.id) {
-    await axios.put(`/api/laporan/${form.value.id}`, form.value)
-  } else {
-    await axios.post('/api/laporan', form.value)
+  if (loading.value) return
+  loading.value = true
+  try {
+    if (form.value.id) {
+      await axios.put(`/api/laporan/${form.value.id}`, form.value)
+    } else {
+      await axios.post('/api/laporan', form.value)
+    }
+    batal()
+    load()
+    notif.showMessage('Laporan berhasil disimpan')
+  } catch (e) {
+    notif.showMessage(e.response?.data?.message || 'Gagal menyimpan', 'error')
+  } finally {
+    loading.value = false
   }
-  batal()
-  load()
 }
 
 async function validasi(id, status) {
-  await axios.put(`/api/laporan/${id}/validasi`, { status_validasi: status })
-  load()
+  try {
+    await axios.put(`/api/laporan/${id}/validasi`, { status_validasi: status })
+    load()
+    notif.showMessage('Status laporan berhasil divalidasi')
+  } catch (e) {
+    notif.showMessage('Gagal validasi', 'error')
+  }
 }
 
 async function hapus(id) {
-  if (confirm('Yakin hapus?')) {
+  if (!confirm('Yakin hapus?')) return
+  try {
     await axios.delete(`/api/laporan/${id}`)
     load()
+    notif.showMessage('Laporan berhasil dihapus')
+  } catch (e) {
+    notif.showMessage('Gagal menghapus', 'error')
   }
 }
 </script>
