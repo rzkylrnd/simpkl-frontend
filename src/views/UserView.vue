@@ -4,9 +4,9 @@
       <h3 class="text-lg font-semibold">Data Users</h3>
       <button @click="showForm = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tambah</button>
     </div>
-    <div class="bg-white rounded shadow overflow-x-auto">
+    <div :class="['rounded shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white']">
       <table class="w-full text-sm">
-        <thead class="bg-gray-50">
+        <thead :class="darkMode ? 'bg-gray-700' : 'bg-gray-50'">
           <tr>
             <th class="p-2 text-left">Nama</th>
             <th class="p-2 text-left">Email</th>
@@ -34,13 +34,13 @@
       </table>
     </div>
 
-    <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center">
-      <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+    <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30">
+      <div :class="['p-6 rounded shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'bg-white']">
         <h3 class="text-lg font-bold mb-4">{{ form.id ? 'Edit' : 'Tambah' }} User</h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
             <label class="block text-sm mb-1">Nama</label>
-            <input v-model="form.nama" type="text" required class="w-full border px-3 py-2 rounded" />
+            <input v-model="form.nama" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Email</label>
@@ -60,7 +60,7 @@
             </select>
           </div>
           <div class="flex gap-2 justify-end">
-            <button type="button" @click="batal" class="px-4 py-2 border rounded hover:bg-gray-100">Batal</button>
+            <button type="button" @click="batal" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']">Batal</button>
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
           </div>
         </form>
@@ -70,8 +70,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useThemeStore } from '../stores/theme'
 import axios from 'axios'
+
+const themeStore = useThemeStore()
+const darkMode = computed(() => themeStore.darkMode)
 
 const data = ref([])
 const showForm = ref(false)
