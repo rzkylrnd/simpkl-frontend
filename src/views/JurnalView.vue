@@ -36,6 +36,12 @@
       <div :class="['p-6 rounded shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'bg-white']">
         <h3 class="text-lg font-bold mb-4">{{ form.id ? 'Edit' : 'Tambah' }} Jurnal</h3>
         <form @submit.prevent="simpan">
+          <div class="mb-3">
+            <label class="block text-sm mb-1">Siswa</label>
+            <p :class="['text-sm font-medium py-2', darkMode ? 'text-gray-300' : 'text-gray-700']">
+              <i class="fas fa-user-graduate mr-1"></i>{{ authStore.user?.nama }}
+            </p>
+          </div>
           <input v-model="form.id_siswa" type="hidden" />
           <div class="mb-3">
             <label class="block text-sm mb-1">Tanggal</label>
