@@ -4,9 +4,9 @@
       <h3 class="text-lg font-semibold">Data Jurnal Harian</h3>
       <button v-if="authStore.isSiswa" @click="showForm = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tambah</button>
     </div>
-    <div class="bg-white rounded shadow overflow-x-auto">
+    <div :class="['rounded shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white']">
       <table class="w-full text-sm">
-        <thead class="bg-gray-50">
+        <thead :class="darkMode ? 'bg-gray-700' : 'bg-gray-50'">
           <tr>
             <th class="p-2 text-left">Siswa</th>
             <th class="p-2 text-left">Tanggal</th>
@@ -33,7 +33,7 @@
     </div>
 
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center">
-      <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+      <div :class="['p-6 rounded shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'bg-white']">
         <h3 class="text-lg font-bold mb-4">{{ form.id ? 'Edit' : 'Tambah' }} Jurnal</h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
@@ -130,6 +130,7 @@ async function hapus(id) {
   }
 }
 </script>
+
 
 
 
