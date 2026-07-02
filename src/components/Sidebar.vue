@@ -1,6 +1,9 @@
 <template>
   <aside :class="['w-64 bg-blue-700 text-white flex flex-col transition-colors duration-300', darkMode ? 'bg-gray-800' : 'bg-blue-700']">
-    <div class="p-4 text-lg font-bold border-b border-white/20">SIMPKL</div>
+    <div class="p-4 text-lg font-bold border-b border-white/20 flex items-center gap-2">
+      <i class="fas fa-graduation-cap text-xl"></i>
+      <span>SIMPKL</span>
+    </div>
     <nav class="flex-1 p-2 space-y-1">
       <router-link v-for="item in filteredMenu" :key="item.path" :to="item.path"
         class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10 transition-colors"
