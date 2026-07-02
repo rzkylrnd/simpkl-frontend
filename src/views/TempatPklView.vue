@@ -56,7 +56,11 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useThemeStore } from '../stores/theme'
 import axios from 'axios'
+
+const themeStore = useThemeStore()
+const darkMode = computed(() => themeStore.darkMode)
 
 const data = ref([])
 const showForm = ref(false)
@@ -96,6 +100,8 @@ async function hapus(id) {
   }
 }
 </script>
+
+
 
 
 

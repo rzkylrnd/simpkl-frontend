@@ -82,10 +82,14 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useThemeStore } from '../stores/theme'
 import { useAuthStore } from '../stores/auth'
 import axios from 'axios'
 
 const authStore = useAuthStore()
+const themeStore = useThemeStore()
+const darkMode = computed(() => themeStore.darkMode)
+
 const data = ref([])
 const siswa = ref([])
 const showForm = ref(false)
@@ -146,6 +150,8 @@ async function hapus(id) {
   }
 }
 </script>
+
+
 
 
 
