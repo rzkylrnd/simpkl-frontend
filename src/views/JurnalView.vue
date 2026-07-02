@@ -24,8 +24,11 @@
             <td class="p-2 max-w-[150px] truncate">{{ item.hasil || '-' }}</td>
             <td class="p-2 max-w-[150px] truncate">{{ item.kendala || '-' }}</td>
             <td class="p-3 text-center whitespace-nowrap">
-              <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-              <button @click="hapus(item.id_jurnal)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+              <template v-if="authStore.isAdmin || authStore.isSiswa">
+                <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+                <button @click="hapus(item.id_jurnal)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+              </template>
+              <span v-else class="text-gray-400 text-xs">-</span>
             </td>
           </tr>
         </tbody>

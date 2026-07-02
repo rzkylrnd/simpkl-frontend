@@ -32,10 +32,11 @@
                 <button @click="validasi(item.id_presensi, 'valid')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 mr-1">Valid</button>
                 <button @click="validasi(item.id_presensi, 'tidak_valid')" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Tidak Valid</button>
               </template>
-              <template v-else>
+              <template v-else-if="authStore.isAdmin || authStore.isSiswa">
                 <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
                 <button @click="hapus(item.id_presensi)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
               </template>
+              <span v-else class="text-gray-400 text-xs">-</span>
             </td>
           </tr>
         </tbody>
@@ -64,10 +65,6 @@
           <div class="mb-3">
             <label class="block text-sm mb-1">Waktu Pulang</label>
             <input v-model="form.waktu_pulang" type="time" class="w-full border px-3 py-2 rounded" />
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm mb-1">Catatan</label>
-            <textarea v-model="form.catatan" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"></textarea>
           </div>
           <div class="flex gap-2 justify-end">
             <button type="button" @click="batal" class="px-4 py-2 border rounded hover:bg-gray-100">Batal</button>
@@ -131,7 +128,6 @@ async function simpan() {
     const payload = { ...form.value }
     if (!payload.waktu_datang) delete payload.waktu_datang
     if (!payload.waktu_pulang) delete payload.waktu_pulang
-    if (!payload.catatan) delete payload.catatan
     if (form.value.id) {
       await axios.put(`/api/presensi/${form.value.id}`, payload)
     } else {
