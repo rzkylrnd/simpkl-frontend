@@ -28,6 +28,7 @@
         <router-view />
       </main>
       <Notification />
+      <ConfirmDialog :show="showLogoutModal" title="Konfirmasi Logout" message="Yakin ingin logout dari sistem?" @confirm="confirmLogout" @cancel="showLogoutModal = false" />
     </div>
   </div>
 </template>
@@ -39,6 +40,7 @@ import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '../stores/theme'
 import Sidebar from '../components/Sidebar.vue'
 import Notification from '../components/Notification.vue'
+import ConfirmDialog from '../components/ConfirmDialog.vue'
 import axios from 'axios'
 
 const authStore = useAuthStore()
@@ -48,6 +50,7 @@ const route = useRoute()
 const darkMode = computed(() => themeStore.darkMode)
 
 const showSidebar = ref(false)
+const showLogoutModal = ref(false)
 
 const pageTitle = computed(() => {
   const titles = {
@@ -66,8 +69,12 @@ const pageTitle = computed(() => {
   return titles[route.name] || 'SIMPKL'
 })
 
-async function handleLogout() {
-  if (!confirm('Yakin ingin logout?')) return
+function handleLogout() {
+  showLogoutModal.value = true
+}
+
+async function confirmLogout() {
+  showLogoutModal.value = false
   try { await axios.post('/api/logout') } catch (e) {}
   authStore.logout()
   router.push('/login')
