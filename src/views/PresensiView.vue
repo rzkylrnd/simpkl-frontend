@@ -86,10 +86,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { useThemeStore } from '../stores/theme'
 import { useAuthStore } from '../stores/auth'
+import { useNotificationStore } from '../stores/notification'
 import axios from 'axios'
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+const notif = useNotificationStore()
 const darkMode = computed(() => themeStore.darkMode)
 
 const data = ref([])
@@ -147,20 +149,33 @@ async function simpan() {
     }
     batal()
     load()
+    notif.showMessage('Presensi berhasil disimpan')
+  } catch (e) {
+    notif.showMessage(e.response?.data?.message || 'Gagal menyimpan', 'error')
   } finally {
     loading.value = false
   }
 }
 
 async function validasi(id, status) {
-  await axios.put(`/api/presensi/${id}/validasi`, { status_validasi: status })
-  load()
+  try {
+    await axios.put(`/api/presensi/${id}/validasi`, { status_validasi: status })
+    load()
+    notif.showMessage('Status presensi berhasil divalidasi')
+  } catch (e) {
+    notif.showMessage('Gagal validasi', 'error')
+  }
 }
 
 async function hapus(id) {
   if (confirm('Yakin hapus?')) {
-    await axios.delete(`/api/presensi/${id}`)
-    load()
+    try {
+      await axios.delete(`/api/presensi/${id}`)
+      load()
+      notif.showMessage('Presensi berhasil dihapus')
+    } catch (e) {
+      notif.showMessage('Gagal menghapus', 'error')
+    }
   }
 }
 </script>

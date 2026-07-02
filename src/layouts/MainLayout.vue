@@ -27,6 +27,7 @@
       <main class="flex-1 p-6 overflow-auto">
         <router-view />
       </main>
+      <Notification />
     </div>
   </div>
 </template>
@@ -37,6 +38,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '../stores/theme'
 import Sidebar from '../components/Sidebar.vue'
+import Notification from '../components/Notification.vue'
 import axios from 'axios'
 
 const authStore = useAuthStore()
