@@ -18,7 +18,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id_penempatan" class="hover:bg-blue-50 transition-colors">
+          <tr v-for="(item, i) in data" :key="item.id_penempatan" :class="[i % 2 === 0 ? 'bg-white' : 'bg-gray-50', 'hover:bg-blue-50 transition-colors']">
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
             <td class="p-3">{{ item.tempat_pkl?.nama_perusahaan }}</td>
             <td class="p-3">{{ item.guru_pembimbing?.nama }}</td>
@@ -158,4 +158,6 @@ async function hapus(id) {
   }
 }
 </script>
+
+
 

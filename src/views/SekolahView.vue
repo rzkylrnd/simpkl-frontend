@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id_sekolah" class="hover:bg-blue-50 transition-colors">
+          <tr v-for="(item, i) in data" :key="item.id_sekolah" :class="[i % 2 === 0 ? 'bg-white' : 'bg-gray-50', 'hover:bg-blue-50 transition-colors']">
             <td class="p-3">{{ item.nama_sekolah }}</td>
             <td class="p-3">{{ item.alamat }}</td>
             <td class="p-3">{{ item.telp }}</td>

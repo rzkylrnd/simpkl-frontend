@@ -17,7 +17,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id_presensi" class="hover:bg-blue-50 transition-colors">
+          <tr v-for="(item, i) in data" :key="item.id_presensi" :class="[i % 2 === 0 ? 'bg-white' : 'bg-gray-50', 'hover:bg-blue-50 transition-colors']">
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
             <td class="p-3">{{ item.tanggal }}</td>
             <td class="p-3">{{ item.waktu_datang || '-' }}</td>
@@ -146,4 +146,6 @@ async function hapus(id) {
   }
 }
 </script>
+
+
 
