@@ -67,6 +67,7 @@ const pageTitle = computed(() => {
 })
 
 async function handleLogout() {
+  if (!confirm('Yakin ingin logout?')) return
   try { await axios.post('/api/logout') } catch (e) {}
   authStore.logout()
   router.push('/login')
