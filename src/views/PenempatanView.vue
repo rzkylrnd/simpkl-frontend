@@ -18,14 +18,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id_penempatan" class="border-t">
-            <td class="p-2">{{ item.siswa?.user?.nama }}</td>
-            <td class="p-2">{{ item.tempat_pkl?.nama_perusahaan }}</td>
-            <td class="p-2">{{ item.guru_pembimbing?.nama }}</td>
-            <td class="p-2">{{ item.pembimbing_industri?.nama }}</td>
-            <td class="p-2">{{ item.tanggal_mulai }}</td>
-            <td class="p-2">{{ item.tanggal_selesai }}</td>
-            <td class="p-2 text-center">
+          <tr v-for="item in data" :key="item.id_penempatan" class="hover:bg-blue-50 transition-colors">
+            <td class="p-3">{{ item.siswa?.user?.nama }}</td>
+            <td class="p-3">{{ item.tempat_pkl?.nama_perusahaan }}</td>
+            <td class="p-3">{{ item.guru_pembimbing?.nama }}</td>
+            <td class="p-3">{{ item.pembimbing_industri?.nama }}</td>
+            <td class="p-3">{{ item.tanggal_mulai }}</td>
+            <td class="p-3">{{ item.tanggal_selesai }}</td>
+            <td class="p-3 text-center whitespace-nowrap">
               <button @click="edit(item)" class="text-blue-600 hover:underline mr-2">Edit</button>
               <button @click="hapus(item.id_penempatan)" class="text-red-600 hover:underline">Hapus</button>
             </td>
@@ -158,3 +158,4 @@ async function hapus(id) {
   }
 }
 </script>
+

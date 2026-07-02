@@ -17,17 +17,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id_presensi" class="border-t">
-            <td class="p-2">{{ item.siswa?.user?.nama }}</td>
-            <td class="p-2">{{ item.tanggal }}</td>
-            <td class="p-2">{{ item.waktu_datang || '-' }}</td>
-            <td class="p-2">{{ item.waktu_pulang || '-' }}</td>
-            <td class="p-2">
+          <tr v-for="item in data" :key="item.id_presensi" class="hover:bg-blue-50 transition-colors">
+            <td class="p-3">{{ item.siswa?.user?.nama }}</td>
+            <td class="p-3">{{ item.tanggal }}</td>
+            <td class="p-3">{{ item.waktu_datang || '-' }}</td>
+            <td class="p-3">{{ item.waktu_pulang || '-' }}</td>
+            <td class="p-3">
               <span v-if="item.status_validasi === 'valid'" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Valid</span>
               <span v-else-if="item.status_validasi === 'tidak_valid'" class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Tidak Valid</span>
               <span v-else class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Menunggu</span>
             </td>
-            <td class="p-2 text-center">
+            <td class="p-3 text-center whitespace-nowrap">
               <template v-if="authStore.isPembimbingIndustri && item.status_validasi === 'menunggu'">
                 <button @click="validasi(item.id_presensi, 'valid')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 mr-1">Valid</button>
                 <button @click="validasi(item.id_presensi, 'tidak_valid')" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Tidak Valid</button>
@@ -146,3 +146,4 @@ async function hapus(id) {
   }
 }
 </script>
+

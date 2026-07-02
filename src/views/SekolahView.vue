@@ -15,11 +15,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id_sekolah" class="border-t">
-            <td class="p-2">{{ item.nama_sekolah }}</td>
-            <td class="p-2">{{ item.alamat }}</td>
-            <td class="p-2">{{ item.telp }}</td>
-            <td class="p-2 text-center">
+          <tr v-for="item in data" :key="item.id_sekolah" class="hover:bg-blue-50 transition-colors">
+            <td class="p-3">{{ item.nama_sekolah }}</td>
+            <td class="p-3">{{ item.alamat }}</td>
+            <td class="p-3">{{ item.telp }}</td>
+            <td class="p-3 text-center whitespace-nowrap">
               <button @click="edit(item)" class="text-blue-600 hover:underline mr-2">Edit</button>
               <button @click="hapus(item.id_sekolah)" class="text-red-600 hover:underline">Hapus</button>
             </td>
@@ -96,3 +96,4 @@ async function hapus(id) {
   }
 }
 </script>
+

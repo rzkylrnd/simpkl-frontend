@@ -17,13 +17,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id_jurnal" class="border-t">
-            <td class="p-2">{{ item.siswa?.user?.nama }}</td>
-            <td class="p-2">{{ item.tanggal }}</td>
+          <tr v-for="item in data" :key="item.id_jurnal" class="hover:bg-blue-50 transition-colors">
+            <td class="p-3">{{ item.siswa?.user?.nama }}</td>
+            <td class="p-3">{{ item.tanggal }}</td>
             <td class="p-2 max-w-[200px] truncate">{{ item.kegiatan }}</td>
             <td class="p-2 max-w-[150px] truncate">{{ item.hasil || '-' }}</td>
             <td class="p-2 max-w-[150px] truncate">{{ item.kendala || '-' }}</td>
-            <td class="p-2 text-center">
+            <td class="p-3 text-center whitespace-nowrap">
               <button @click="edit(item)" class="text-blue-600 hover:underline mr-2">Edit</button>
               <button @click="hapus(item.id_jurnal)" class="text-red-600 hover:underline">Hapus</button>
             </td>
@@ -130,3 +130,4 @@ async function hapus(id) {
   }
 }
 </script>
+

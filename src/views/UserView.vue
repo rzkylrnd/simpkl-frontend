@@ -15,13 +15,19 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id" class="border-t">
-            <td class="p-2">{{ item.nama }}</td>
-            <td class="p-2">{{ item.email }}</td>
-            <td class="p-2">{{ item.role }}</td>
-            <td class="p-2 text-center">
-              <button @click="edit(item)" class="text-blue-600 hover:underline mr-2">Edit</button>
-              <button @click="hapus(item.id)" class="text-red-600 hover:underline">Hapus</button>
+          <tr v-for="(item, i) in data" :key="item.id" :class="[i % 2 === 0 ? 'bg-white' : 'bg-gray-50', 'hover:bg-blue-50 transition-colors']">
+            <td class="p-3">{{ item.nama }}</td>
+            <td class="p-3">{{ item.email }}</td>
+            <td class="p-3">
+              <span :class="['px-2 py-0.5 rounded text-xs font-medium',
+                item.role === 'admin' ? 'bg-purple-100 text-purple-700' :
+                item.role === 'guru_pembimbing' ? 'bg-blue-100 text-blue-700' :
+                item.role === 'pembimbing_industri' ? 'bg-green-100 text-green-700' :
+                'bg-yellow-100 text-yellow-700']">{{ item.role }}</span>
+            </td>
+            <td class="p-3 text-center whitespace-nowrap">
+              <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+              <button @click="hapus(item.id)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
