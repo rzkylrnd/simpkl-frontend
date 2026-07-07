@@ -2,7 +2,7 @@
   <div>
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Data Users</h3>
-      <button @click="showForm = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tambah</button>
+      <button @click="batal(); showForm = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tambah</button>
     </div>
     <div :class="['rounded shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white']">
       <table class="w-full text-sm">
@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, i) in data" :key="item.id" :class="[i % 2 === 0 ? 'bg-white' : 'bg-gray-50', 'hover:bg-blue-50 transition-colors']">
+          <tr v-for="(item, i) in data" :key="item.id" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'hover:bg-blue-50 transition-colors']">
             <td class="p-3">{{ item.nama }}</td>
             <td class="p-3">{{ item.email }}</td>
             <td class="p-3">
@@ -44,15 +44,15 @@
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Email</label>
-            <input v-model="form.email" type="text" required class="w-full border px-3 py-2 rounded" />
+            <input v-model="form.email" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Password <span class="text-gray-400">(isi jika ganti)</span></label>
-            <input v-model="form.password" type="password" class="w-full border px-3 py-2 rounded" />
+            <label class="block text-sm mb-1">Password <span :class="darkMode ? 'text-gray-500' : 'text-gray-400'">(isi jika ganti)</span></label>
+            <input v-model="form.password" type="password" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
           <div class="mb-4">
             <label class="block text-sm mb-1">Role</label>
-            <select v-model="form.role" required class="w-full border px-3 py-2 rounded">
+            <select v-model="form.role" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
               <option value="admin">Admin</option>
               <option value="siswa">Siswa</option>
               <option value="guru_pembimbing">Guru Pembimbing</option>

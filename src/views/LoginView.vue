@@ -1,18 +1,18 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-      <h2 class="text-2xl font-bold text-center text-blue-700 mb-6">SIMPKL</h2>
-      <p class="text-center text-gray-500 mb-6">Sistem Informasi Praktek Kerja Lapangan</p>
+  <div :class="['min-h-screen flex items-center justify-center', darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-600 to-blue-800']">
+    <div :class="['p-8 rounded-lg shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'bg-white']">
+      <h2 :class="['text-2xl font-bold text-center mb-6', darkMode ? 'text-white' : 'text-blue-700']">SIMPKL</h2>
+      <p :class="['text-center mb-6', darkMode ? 'text-gray-400' : 'text-gray-500']">Sistem Informasi Praktek Kerja Lapangan</p>
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label :class="['block text-sm font-medium mb-1', darkMode ? 'text-gray-300' : 'text-gray-700']">Email</label>
           <input v-model="email" type="text" required
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            :class="['w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
         </div>
         <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label :class="['block text-sm font-medium mb-1', darkMode ? 'text-gray-300' : 'text-gray-700']">Password</label>
           <input v-model="password" type="password" required
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            :class="['w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
         </div>
         <p v-if="error" class="text-red-500 text-sm mb-4">{{ error }}</p>
         <button type="submit" :disabled="loading"
@@ -25,9 +25,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { useThemeStore } from '../stores/theme'
+
+const themeStore = useThemeStore()
+const darkMode = computed(() => themeStore.darkMode)
 
 const email = ref('')
 const password = ref('')

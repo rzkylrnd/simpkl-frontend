@@ -17,7 +17,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, i) in data" :key="item.id_presensi" :class="[i % 2 === 0 ? 'bg-white' : 'bg-gray-50', 'hover:bg-blue-50 transition-colors']">
+          <tr v-for="(item, i) in data" :key="item.id_presensi" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'hover:bg-blue-50 transition-colors']">
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
             <td class="p-3">{{ item.tanggal }}</td>
             <td class="p-3">{{ item.waktu_datang || '-' }}</td>
@@ -36,7 +36,7 @@
                 <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
                 <button @click="hapus(item.id_presensi)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
               </template>
-              <span v-else class="text-gray-400 text-xs">-</span>
+              <span v-else :class="['text-xs', darkMode ? 'text-gray-500' : 'text-gray-400']">-</span>
             </td>
           </tr>
         </tbody>
@@ -56,18 +56,18 @@
           <input v-model="form.id_siswa" type="hidden" />
           <div class="mb-3">
             <label class="block text-sm mb-1">Tanggal</label>
-            <input v-model="form.tanggal" type="date" required class="w-full border px-3 py-2 rounded" />
+            <input v-model="form.tanggal" type="date" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Waktu Datang</label>
-            <input v-model="form.waktu_datang" type="time" class="w-full border px-3 py-2 rounded" />
+            <input v-model="form.waktu_datang" type="time" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Waktu Pulang</label>
-            <input v-model="form.waktu_pulang" type="time" class="w-full border px-3 py-2 rounded" />
+            <input v-model="form.waktu_pulang" type="time" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
           <div class="flex gap-2 justify-end">
-            <button type="button" @click="batal" class="px-4 py-2 border rounded hover:bg-gray-100">Batal</button>
+            <button type="button" @click="batal" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']">Batal</button>
             <button type="submit" :disabled="loading" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
               <i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? 'Menyimpan...' : 'Simpan' }}
             </button>

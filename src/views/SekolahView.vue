@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Data Sekolah</h3>
       <button
-        @click="showForm = true"
+        @click="batal(); showForm = true"
         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       >
         Tambah
@@ -29,8 +29,8 @@
             v-for="(item, i) in data"
             :key="item.id_sekolah"
             :class="[
-              i % 2 === 0 ? 'bg-white' : 'bg-gray-50',
-              'hover:bg-blue-50 transition-colors',
+              i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'),
+              darkMode ? 'hover:bg-gray-600 transition-colors' : 'hover:bg-blue-50 transition-colors',
             ]"
           >
             <td class="p-3">{{ item.nama_sekolah }}</td>
@@ -89,7 +89,7 @@
               v-model="form.alamat"
               type="text"
               required
-              class="w-full border px-3 py-2 rounded"
+              :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"
             />
           </div>
           <div class="mb-4">
@@ -97,14 +97,14 @@
             <input
               v-model="form.telp"
               type="text"
-              class="w-full border px-3 py-2 rounded"
+              :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"
             />
           </div>
           <div class="flex gap-2 justify-end">
             <button
               type="button"
               @click="batal"
-              class="px-4 py-2 border rounded hover:bg-gray-100"
+              :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']"
             >
               Batal
             </button>
