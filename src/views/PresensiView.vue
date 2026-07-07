@@ -267,7 +267,7 @@ function edit(item) {
     id: item.id_presensi,
     id_siswa: item.id_siswa,
     tanggal: item.tanggal,
-    waktu_datang: item.waktu_datang || "",
+    waktu_datang: (item.waktu_datang || "").replace(" WIB", ""),
     waktu_pulang: item.waktu_pulang || "",
     catatan: item.catatan || "",
   };
@@ -292,7 +292,7 @@ async function simpan() {
   try {
     const payload = { ...form.value };
     if (authStore.isSiswa && !form.value.id && !payload.waktu_datang) {
-      payload.waktu_datang = new Date().toTimeString().slice(0, 5);
+      payload.waktu_datang = new Date().toTimeString().slice(0, 5) + " WIB";
     }
     if (!payload.waktu_datang) delete payload.waktu_datang;
     if (!payload.waktu_pulang) delete payload.waktu_pulang;
