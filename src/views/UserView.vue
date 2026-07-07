@@ -33,26 +33,39 @@
         </tbody>
       </table>
     </div>
-
-    <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30">
-      <div :class="['p-6 rounded shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'bg-white']">
-        <h3 class="text-lg font-bold mb-4">{{ form.id ? 'Edit' : 'Tambah' }} User</h3>
-        <form @submit.prevent="simpan">
-          <div class="mb-3">
-            <label class="block text-sm mb-1">Nama</label>
-            <input v-model="form.nama" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+    <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="batal">
+      <div :class="['w-full max-w-md mx-4 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto', darkMode ? 'bg-gray-800' : 'bg-white']">
+        <div :class="['flex items-center justify-between px-6 py-4 border-b', darkMode ? 'border-gray-700' : 'border-gray-200']">
+          <div class="flex items-center gap-2">
+            <div :class="'w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm ' + (form.id ? 'bg-blue-500' : 'bg-green-500')">
+              <i :class="form.id ? 'fas fa-pen' : 'fas fa-plus'"></i>
+            </div>
+            <h3 class="text-lg font-bold">{{ form.id ? 'Edit' : 'Tambah' }} User</h3>
           </div>
-          <div class="mb-3">
-            <label class="block text-sm mb-1">Email</label>
-            <input v-model="form.email" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+          <button @click="batal" :class="'w-8 h-8 rounded-lg flex items-center justify-center hover:' + (darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-500')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form @submit.prevent="simpan" class="p-6">
+          <div class="mb-4">
+            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Nama</label>
+            <input v-model="form.nama" type="text" required placeholder="Masukkan nama"
+              :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 placeholder-gray-400']" />
           </div>
-          <div class="mb-3">
-            <label class="block text-sm mb-1">Password <span :class="darkMode ? 'text-gray-500' : 'text-gray-400'">(isi jika ganti)</span></label>
-            <input v-model="form.password" type="password" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+          <div class="mb-4">
+            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Email</label>
+            <input v-model="form.email" type="text" required placeholder="Masukkan email"
+              :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 placeholder-gray-400']" />
           </div>
-          <div class="mb-3">
-            <label class="block text-sm mb-1">Role</label>
-            <select v-model="form.role" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+          <div class="mb-4">
+            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Password <span :class="darkMode ? 'text-gray-500' : 'text-gray-400'">(isi jika ganti)</span></label>
+            <input v-model="form.password" type="password" placeholder="Minimal 6 karakter"
+              :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 placeholder-gray-400']" />
+          </div>
+          <div class="mb-4">
+            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Role</label>
+            <select v-model="form.role" required
+              :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']">
               <option value="admin">Admin</option>
               <option value="siswa">Siswa</option>
               <option value="guru_pembimbing">Guru Pembimbing</option>
@@ -61,37 +74,54 @@
           </div>
 
           <template v-if="form.role === 'siswa'">
-            <div class="mb-3">
-              <label class="block text-sm mb-1">Sekolah</label>
-              <select v-model="form.id_sekolah" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
-                <option value="">-- Pilih --</option>
-                <option v-for="s in sekolah" :key="s.id_sekolah" :value="s.id_sekolah">{{ s.nama_sekolah }}</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label class="block text-sm mb-1">NIS</label>
-              <input v-model="form.nis" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
-            </div>
-            <div class="mb-3">
-              <label class="block text-sm mb-1">Kelas</label>
-              <input v-model="form.kelas" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
-            </div>
-            <div class="mb-3">
-              <label class="block text-sm mb-1">Jurusan</label>
-              <input v-model="form.jurusan" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
-            </div>
-            <div class="mb-3">
-              <label class="block text-sm mb-1">Alamat</label>
-              <textarea v-model="form.alamat" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"></textarea>
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm mb-1">Telp</label>
-              <input v-model="form.telp" type="text" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+            <div :class="['mb-4 pt-4 border-t', darkMode ? 'border-gray-700' : 'border-gray-200']">
+              <p :class="['text-xs font-semibold uppercase tracking-wider mb-3', darkMode ? 'text-gray-400' : 'text-gray-500']">Data Siswa</p>
+              <div class="mb-4">
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Sekolah</label>
+                <select v-model="form.id_sekolah" required
+                  :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']">
+                  <option value="">-- Pilih Sekolah --</option>
+                  <option v-for="s in sekolah" :key="s.id_sekolah" :value="s.id_sekolah">{{ s.nama_sekolah }}</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">NIS</label>
+                  <input v-model="form.nis" type="text" required placeholder="Nomor induk siswa"
+                    :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 placeholder-gray-400']" />
+                </div>
+                <div>
+                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Kelas</label>
+                  <input v-model="form.kelas" type="text" required placeholder="Contoh: XII RPL 1"
+                    :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 placeholder-gray-400']" />
+                </div>
+              </div>
+              <div class="mb-4">
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Jurusan</label>
+                <input v-model="form.jurusan" type="text" required placeholder="Contoh: Rekayasa Perangkat Lunak"
+                  :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 placeholder-gray-400']" />
+              </div>
+              <div class="mb-4">
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Alamat</label>
+                <textarea v-model="form.alamat" rows="2" placeholder="Alamat siswa"
+                  :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 placeholder-gray-400']"></textarea>
+              </div>
+              <div class="mb-2">
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Telp</label>
+                <input v-model="form.telp" type="text" placeholder="Nomor telepon"
+                  :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 placeholder-gray-400']" />
+              </div>
             </div>
           </template>
-          <div class="flex gap-2 justify-end">
-            <button type="button" @click="batal" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']">Batal</button>
-            <button type="submit" :disabled="loading" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"><i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? "Menyimpan..." : "Simpan" }}</button>
+
+          <div class="flex gap-3 justify-end pt-4 border-t" :class="darkMode ? 'border-gray-700' : 'border-gray-200'">
+            <button type="button" @click="batal"
+              :class="['px-5 py-2.5 rounded-lg text-sm font-medium transition', darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700']">Batal</button>
+            <button type="submit" :disabled="loading"
+              class="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition flex items-center gap-2">
+              <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+              {{ loading ? "Menyimpan..." : "Simpan" }}
+            </button>
           </div>
         </form>
       </div>
