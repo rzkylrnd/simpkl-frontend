@@ -13,37 +13,41 @@
         <button @click="showPassword = !showPassword" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Ganti Password</button>
       </div>
 
-      <form v-if="showEdit" @submit.prevent="updateProfile" :class="['border-t pt-4 mb-4', darkMode ? 'border-gray-600' : '']">
-        <h4 class="font-semibold mb-2">Edit Profile</h4>
-        <div class="mb-3">
-          <label class="block text-sm mb-1">Nama</label>
-          <input v-model="editForm.nama" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
-        </div>
-        <div class="mb-3">
-  <label class="block text-sm mb-1">Email</label>
-  <input v-model="editForm.email" type="email" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
-</div>
-<div v-if="authStore.isSiswa" class="mb-3">
-  <label class="block text-sm mb-1">Sekolah</label>
-  <select v-model="editForm.id_sekolah" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
-    <option value="">-- Pilih --</option>
-    <option v-for="s in sekolah" :key="s.id_sekolah" :value="s.id_sekolah">{{ s.nama_sekolah }}</option>
-  </select>
-</div>
-        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
-      </form>
-      <form v-if="showPassword" @submit.prevent="changePassword" :class="['border-t pt-4', darkMode ? 'border-gray-600' : '']">
-        <h4 class="font-semibold mb-2">Ganti Password</h4>
-        <div class="mb-3">
-          <label class="block text-sm mb-1">Password Baru</label>
-          <input v-model="passwordForm.password" type="password" required minlength="6" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
-        </div>
-        <div class="mb-3">
-          <label class="block text-sm mb-1">Konfirmasi Password</label>
-          <input v-model="passwordForm.password_confirmation" type="password" required minlength="6" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
-        </div>
-        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
-      </form>
+      <div v-if="showEdit" :class="['rounded shadow p-4 mb-4', darkMode ? 'bg-gray-700' : 'bg-gray-50']">
+        <form @submit.prevent="updateProfile">
+          <h4 class="font-semibold mb-3">Edit Profile</h4>
+          <div class="mb-3">
+            <label class="block text-sm mb-1">Nama</label>
+            <input v-model="editForm.nama" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+          </div>
+          <div class="mb-3">
+            <label class="block text-sm mb-1">Email</label>
+            <input v-model="editForm.email" type="email" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+          </div>
+          <div v-if="authStore.isSiswa" class="mb-3">
+            <label class="block text-sm mb-1">Sekolah</label>
+            <select v-model="editForm.id_sekolah" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+              <option value="">-- Pilih --</option>
+              <option v-for="s in sekolah" :key="s.id_sekolah" :value="s.id_sekolah">{{ s.nama_sekolah }}</option>
+            </select>
+          </div>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
+        </form>
+      </div>
+      <div v-if="showPassword" :class="['rounded shadow p-4', darkMode ? 'bg-gray-700' : 'bg-gray-50']">
+        <form @submit.prevent="changePassword">
+          <h4 class="font-semibold mb-3">Ganti Password</h4>
+          <div class="mb-3">
+            <label class="block text-sm mb-1">Password Baru</label>
+            <input v-model="passwordForm.password" type="password" required minlength="6" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+          </div>
+          <div class="mb-3">
+            <label class="block text-sm mb-1">Konfirmasi Password</label>
+            <input v-model="passwordForm.password_confirmation" type="password" required minlength="6" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+          </div>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
+        </form>
+      </div>
     </div>
   </div>
 </template>
