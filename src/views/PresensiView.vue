@@ -148,13 +148,21 @@
               v-model="form.tanggal"
               type="date"
               required
+              :readonly="authStore.isSiswa && !form.id"
               :class="[
                 'w-full border px-3 py-2 rounded',
                 darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
+                authStore.isSiswa && !form.id ? 'opacity-70 cursor-not-allowed' : '',
               ]"
             />
           </div>
-          <div class="mb-3">
+          <div v-if="authStore.isSiswa && !form.id" class="mb-3">
+            <label class="block text-sm mb-1">Waktu Datang</label>
+            <p :class="['text-sm font-medium py-2', darkMode ? 'text-gray-300' : 'text-gray-700']">
+              <i class="fas fa-clock mr-1"></i>Akan terisi otomatis saat simpan
+            </p>
+          </div>
+          <div v-else class="mb-3">
             <label class="block text-sm mb-1">Waktu Datang</label>
             <input
               v-model="form.waktu_datang"
@@ -242,11 +250,11 @@ async function load() {
 }
 
 function openForm() {
-  console.log(authStore.user?.siswa);
+  const today = new Date().toISOString().slice(0, 10);
   form.value = {
     id: null,
     id_siswa: authStore.user?.siswa?.id_siswa || "",
-    tanggal: "",
+    tanggal: authStore.isSiswa ? today : "",
     waktu_datang: "",
     waktu_pulang: "",
     catatan: "",
@@ -283,6 +291,9 @@ async function simpan() {
   loading.value = true;
   try {
     const payload = { ...form.value };
+    if (authStore.isSiswa && !form.value.id && !payload.waktu_datang) {
+      payload.waktu_datang = new Date().toTimeString().slice(0, 5);
+    }
     if (!payload.waktu_datang) delete payload.waktu_datang;
     if (!payload.waktu_pulang) delete payload.waktu_pulang;
     if (form.value.id) {
