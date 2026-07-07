@@ -50,7 +50,7 @@
             <label class="block text-sm mb-1">Password <span :class="darkMode ? 'text-gray-500' : 'text-gray-400'">(isi jika ganti)</span></label>
             <input v-model="form.password" type="password" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
           </div>
-          <div class="mb-4">
+          <div class="mb-3">
             <label class="block text-sm mb-1">Role</label>
             <select v-model="form.role" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
               <option value="admin">Admin</option>
@@ -59,6 +59,36 @@
               <option value="pembimbing_industri">Pembimbing Industri</option>
             </select>
           </div>
+
+          <template v-if="form.role === 'siswa'">
+            <div class="mb-3">
+              <label class="block text-sm mb-1">Sekolah</label>
+              <select v-model="form.id_sekolah" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+                <option value="">-- Pilih --</option>
+                <option v-for="s in sekolah" :key="s.id_sekolah" :value="s.id_sekolah">{{ s.nama_sekolah }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="block text-sm mb-1">NIS</label>
+              <input v-model="form.nis" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+            </div>
+            <div class="mb-3">
+              <label class="block text-sm mb-1">Kelas</label>
+              <input v-model="form.kelas" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+            </div>
+            <div class="mb-3">
+              <label class="block text-sm mb-1">Jurusan</label>
+              <input v-model="form.jurusan" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+            </div>
+            <div class="mb-3">
+              <label class="block text-sm mb-1">Alamat</label>
+              <textarea v-model="form.alamat" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"></textarea>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm mb-1">Telp</label>
+              <input v-model="form.telp" type="text" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+            </div>
+          </template>
           <div class="flex gap-2 justify-end">
             <button type="button" @click="batal" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']">Batal</button>
             <button type="submit" :disabled="loading" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"><i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? "Menyimpan..." : "Simpan" }}</button>
@@ -81,10 +111,18 @@ const darkMode = computed(() => themeStore.darkMode)
 
 const loading = ref(false)
 const data = ref([])
+const sekolah = ref([])
 const showForm = ref(false)
-const form = ref({ id: null, nama: '', email: '', password: '', role: 'siswa' })
+const form = ref({ id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '' })
 
-onMounted(() => load())
+onMounted(() => { load(); loadSekolah() })
+
+async function loadSekolah() {
+  try {
+    const res = await axios.get('/api/sekolah')
+    sekolah.value = res.data.data
+  } catch (e) {}
+}
 
 async function load() {
   try {
@@ -96,13 +134,18 @@ async function load() {
 }
 
 function edit(item) {
-  form.value = { id: item.id, nama: item.nama, email: item.email, password: '', role: item.role }
+  const s = item.siswa
+  form.value = {
+    id: item.id, nama: item.nama, email: item.email, password: '', role: item.role,
+    id_sekolah: s?.id_sekolah || '', nis: s?.nis || '', kelas: s?.kelas || '',
+    jurusan: s?.jurusan || '', alamat: s?.alamat || '', telp: s?.telp || '',
+  }
   showForm.value = true
 }
 
 function batal() {
   showForm.value = false
-  form.value = { id: null, nama: '', email: '', password: '', role: 'siswa' }
+  form.value = { id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '' }
 }
 
 async function simpan() {
