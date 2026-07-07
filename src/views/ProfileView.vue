@@ -19,9 +19,19 @@
           <label class="block text-sm mb-1">Nama</label>
           <input v-model="editForm.nama" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
         </div>
+        <div class="mb-3">
+  <label class="block text-sm mb-1">Email</label>
+  <input v-model="editForm.email" type="email" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+</div>
+<div v-if="authStore.isSiswa" class="mb-3">
+  <label class="block text-sm mb-1">Sekolah</label>
+  <select v-model="editForm.id_sekolah" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+    <option value="">-- Pilih --</option>
+    <option v-for="s in sekolah" :key="s.id_sekolah" :value="s.id_sekolah">{{ s.nama_sekolah }}</option>
+  </select>
+</div>
         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
       </form>
-
       <form v-if="showPassword" @submit.prevent="changePassword" :class="['border-t pt-4', darkMode ? 'border-gray-600' : '']">
         <h4 class="font-semibold mb-2">Ganti Password</h4>
         <div class="mb-3">
@@ -49,19 +59,39 @@ const themeStore = useThemeStore()
 const darkMode = computed(() => themeStore.darkMode)
 const showEdit = ref(false)
 const showPassword = ref(false)
-const editForm = ref({ nama: authStore.user?.nama || '' })
+const editForm = ref({ nama: authStore.user?.nama || '', email: authStore.user?.email || '', id_sekolah: authStore.user?.siswa?.id_sekolah || '' })
+const sekolah = ref([])
 const passwordForm = ref({ password: '', password_confirmation: '' })
+
+async function loadSekolah() {
+  try {
+    const res = await axios.get('/api/sekolah')
+    sekolah.value = res.data.data
+  } catch (e) {}
+}
 
 onMounted(() => {
   editForm.value.nama = authStore.user?.nama || ''
+  editForm.value.email = authStore.user?.email || ''
+  editForm.value.id_sekolah = authStore.user?.siswa?.id_sekolah || ''
+  if (authStore.isSiswa) loadSekolah()
 })
 
 async function updateProfile() {
-  await axios.put(`/api/users/${authStore.user.id}`, {
+  const payload = {
     nama: editForm.value.nama,
-    email: authStore.user.email,
+    email: editForm.value.email,
     role: authStore.user.role,
-  })
+  }
+  await axios.put(`/api/users/${authStore.user.id}`, payload)
+  if (authStore.isSiswa && editForm.value.id_sekolah) {
+    await axios.put(`/api/siswa/${authStore.user.siswa.id_siswa}`, {
+      id_sekolah: editForm.value.id_sekolah,
+      nis: authStore.user.siswa.nis,
+      kelas: authStore.user.siswa.kelas,
+      jurusan: authStore.user.siswa.jurusan,
+    })
+  }
   await authStore.fetchUser()
   showEdit.value = false
 }
