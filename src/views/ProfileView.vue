@@ -74,7 +74,7 @@ onMounted(() => {
   editForm.value.nama = authStore.user?.nama || ''
   editForm.value.email = authStore.user?.email || ''
   editForm.value.id_sekolah = authStore.user?.siswa?.id_sekolah || ''
-  if (authStore.isSiswa) loadSekolah()
+  loadSekolah()
 })
 
 async function updateProfile() {
