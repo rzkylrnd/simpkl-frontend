@@ -182,6 +182,12 @@ async function simpan() {
   if (loading.value) return
   loading.value = true
   try {
+    if (form.value.password) {
+      if (form.value.password.length < 8) { notif.showMessage('Password minimal 8 karakter', 'error'); loading.value = false; return }
+      if (!/[A-Z]/.test(form.value.password)) { notif.showMessage('Password harus mengandung huruf besar', 'error'); loading.value = false; return }
+      if (!/[0-9]/.test(form.value.password)) { notif.showMessage('Password harus mengandung angka', 'error'); loading.value = false; return }
+      if (!/[^a-zA-Z0-9]/.test(form.value.password)) { notif.showMessage('Password harus mengandung simbol', 'error'); loading.value = false; return }
+    }
     const payload = { ...form.value }
     if (!payload.password) delete payload.password
     if (form.value.id) {
