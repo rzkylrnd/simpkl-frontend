@@ -169,6 +169,7 @@
               type="text"
               placeholder="HH:MM"
               pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+              @blur="formatTimeField('waktu_datang')"
               :class="[
                 'w-full border px-3 py-2 rounded',
                 darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
@@ -182,6 +183,7 @@
               type="text"
               placeholder="HH:MM"
               pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+              @blur="formatTimeField('waktu_pulang')"
               :class="[
                 'w-full border px-3 py-2 rounded',
                 darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
@@ -278,6 +280,18 @@ function edit(item) {
   showForm.value = true;
 }
 
+function parseTime(val) {
+  if (!val) return "";
+  const digits = val.replace(/\D/g, "");
+  if (digits.length === 3) return digits.slice(0, 1) + ":" + digits.slice(1);
+  if (digits.length >= 4) return digits.slice(0, 2) + ":" + digits.slice(2, 4);
+  return val;
+}
+
+function formatTimeField(field) {
+  form.value[field] = parseTime(form.value[field]);
+}
+
 function batal() {
   showForm.value = false;
   form.value = {
@@ -298,6 +312,8 @@ async function simpan() {
     if (authStore.isSiswa && !form.value.id && !payload.waktu_datang) {
       payload.waktu_datang = new Date().toTimeString().slice(0, 5);
     }
+    if (payload.waktu_datang) payload.waktu_datang = parseTime(payload.waktu_datang);
+    if (payload.waktu_pulang) payload.waktu_pulang = parseTime(payload.waktu_pulang);
     if (!payload.waktu_datang) delete payload.waktu_datang;
     if (!payload.waktu_pulang) delete payload.waktu_pulang;
     if (form.value.id) {
