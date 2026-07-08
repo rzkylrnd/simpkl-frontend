@@ -46,8 +46,8 @@
           >
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
             <td class="p-3">{{ item.tanggal }}</td>
-            <td class="p-3">{{ item.waktu_datang || "-" }}</td>
-            <td class="p-3">{{ item.waktu_pulang || "-" }}</td>
+            <td class="p-3">{{ item.waktu_datang ? item.waktu_datang.slice(0,5) + ' WIB' : '-' }}</td>
+            <td class="p-3">{{ item.waktu_pulang ? item.waktu_pulang.slice(0,5) + ' WIB' : '-' }}</td>
             <td class="p-3">
               <span
                 v-if="item.status_validasi === 'valid'"
@@ -166,7 +166,9 @@
             <label class="block text-sm mb-1">Waktu Datang</label>
             <input
               v-model="form.waktu_datang"
-              type="time"
+              type="text"
+              placeholder="HH:MM"
+              pattern="^([01]\d|2[0-3]):([0-5]\d)$"
               :class="[
                 'w-full border px-3 py-2 rounded',
                 darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
@@ -177,7 +179,9 @@
             <label class="block text-sm mb-1">Waktu Pulang</label>
             <input
               v-model="form.waktu_pulang"
-              type="time"
+              type="text"
+              placeholder="HH:MM"
+              pattern="^([01]\d|2[0-3]):([0-5]\d)$"
               :class="[
                 'w-full border px-3 py-2 rounded',
                 darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
@@ -292,7 +296,7 @@ async function simpan() {
   try {
     const payload = { ...form.value };
     if (authStore.isSiswa && !form.value.id && !payload.waktu_datang) {
-      payload.waktu_datang = new Date().toTimeString().slice(0, 5) + " WIB";
+      payload.waktu_datang = new Date().toTimeString().slice(0, 5);
     }
     if (!payload.waktu_datang) delete payload.waktu_datang;
     if (!payload.waktu_pulang) delete payload.waktu_pulang;
