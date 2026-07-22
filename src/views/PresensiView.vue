@@ -46,8 +46,16 @@
           >
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
             <td class="p-3">{{ item.tanggal }}</td>
-            <td class="p-3">{{ item.waktu_datang ? item.waktu_datang.slice(0,5) + ' WIB' : '-' }}</td>
-            <td class="p-3">{{ item.waktu_pulang ? item.waktu_pulang.slice(0,5) + ' WIB' : '-' }}</td>
+            <td class="p-3">
+              {{
+                item.waktu_datang ? item.waktu_datang.slice(0, 5) + " WIB" : "-"
+              }}
+            </td>
+            <td class="p-3">
+              {{
+                item.waktu_pulang ? item.waktu_pulang.slice(0, 5) + " WIB" : "-"
+              }}
+            </td>
             <td class="p-3">
               <span
                 v-if="item.status_validasi === 'valid'"
@@ -126,7 +134,7 @@
         ]"
       >
         <h3 class="text-lg font-bold mb-4">
-          {{ form.id ? "Edit" : "Tambah" }} Presensi
+          {{ form.id && !authStore.isSiswa ? "Edit" : presensiType ? "Presensi " + (presensiType === "masuk" ? "Masuk" : "Pulang") : "Tambah" }} Presensi
         </h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
@@ -152,13 +160,31 @@
               :class="[
                 'w-full border px-3 py-2 rounded',
                 darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
-                authStore.isSiswa && !form.id ? 'opacity-70 cursor-not-allowed' : '',
+                authStore.isSiswa && !form.id
+                  ? 'opacity-70 cursor-not-allowed'
+                  : '',
               ]"
             />
           </div>
-          <div v-if="authStore.isSiswa && !form.id" class="mb-3">
+          <div v-if="authStore.isSiswa && presensiType === 'masuk' && !form.id" class="mb-3">
             <label class="block text-sm mb-1">Waktu Datang</label>
-            <p :class="['text-sm font-medium py-2', darkMode ? 'text-gray-300' : 'text-gray-700']">
+            <p
+              :class="[
+                'text-sm font-medium py-2',
+                darkMode ? 'text-gray-300' : 'text-gray-700',
+              ]"
+            >
+              <i class="fas fa-clock mr-1"></i>Akan terisi otomatis saat simpan
+            </p>
+          </div>
+          <div v-else-if="authStore.isSiswa && presensiType === 'pulang'" class="mb-3">
+            <label class="block text-sm mb-1">Waktu Pulang</label>
+            <p
+              :class="[
+                'text-sm font-medium py-2',
+                darkMode ? 'text-gray-300' : 'text-gray-700',
+              ]"
+            >
               <i class="fas fa-clock mr-1"></i>Akan terisi otomatis saat simpan
             </p>
           </div>
@@ -176,7 +202,7 @@
               ]"
             />
           </div>
-          <div class="mb-3">
+          <div v-if="!authStore.isSiswa || (authStore.isSiswa && form.id)" class="mb-3">
             <label class="block text-sm mb-1">Waktu Pulang</label>
             <input
               :value="form.waktu_pulang"
@@ -233,6 +259,7 @@ const darkMode = computed(() => themeStore.darkMode);
 const data = ref([]);
 const showForm = ref(false);
 const loading = ref(false);
+const presensiType = ref("");
 const form = ref({
   id: null,
   id_siswa: "",
@@ -257,14 +284,34 @@ async function load() {
 
 function openForm() {
   const today = new Date().toISOString().slice(0, 10);
-  form.value = {
-    id: null,
-    id_siswa: authStore.user?.siswa?.id_siswa || "",
-    tanggal: authStore.isSiswa ? today : "",
-    waktu_datang: "",
-    waktu_pulang: "",
-    catatan: "",
-  };
+  const todayRecord = data.value.find(
+    (d) => d.tanggal === today && d.id_siswa === authStore.user?.siswa?.id_siswa
+  );
+  if (todayRecord && todayRecord.waktu_datang && todayRecord.waktu_pulang) {
+    notif.showMessage("Anda sudah melakukan presensi masuk dan pulang hari ini", "warning");
+    return;
+  }
+  if (todayRecord && todayRecord.waktu_datang) {
+    presensiType.value = "pulang";
+    form.value = {
+      id: todayRecord.id_presensi,
+      id_siswa: todayRecord.id_siswa,
+      tanggal: today,
+      waktu_datang: "",
+      waktu_pulang: "",
+      catatan: "",
+    };
+  } else {
+    presensiType.value = "masuk";
+    form.value = {
+      id: null,
+      id_siswa: authStore.user?.siswa?.id_siswa || "",
+      tanggal: today,
+      waktu_datang: "",
+      waktu_pulang: "",
+      catatan: "",
+    };
+  }
   showForm.value = true;
 }
 
@@ -282,7 +329,8 @@ function edit(item) {
 
 function onTimeInput(e, field) {
   const raw = e.target.value.replace(/[^0-9]/g, "").slice(0, 4);
-  const formatted = raw.length >= 3 ? raw.slice(0, 2) + ":" + raw.slice(2) : raw;
+  const formatted =
+    raw.length >= 3 ? raw.slice(0, 2) + ":" + raw.slice(2) : raw;
   e.target.value = formatted;
   form.value[field] = formatted;
 }
@@ -303,22 +351,40 @@ async function simpan() {
   if (loading.value) return;
   loading.value = true;
   try {
-    const payload = { ...form.value };
-    if (authStore.isSiswa && !form.value.id && !payload.waktu_datang) {
-      payload.waktu_datang = new Date().toTimeString().slice(0, 5);
-    }
-    if (!payload.waktu_datang) delete payload.waktu_datang;
-    if (!payload.waktu_pulang) delete payload.waktu_pulang;
-    if (form.value.id) {
-      await axios.put(`/api/presensi/${form.value.id}`, payload);
+    const now = new Date().toTimeString().slice(0, 5);
+    if (authStore.isSiswa) {
+      if (presensiType.value === "masuk") {
+        const payload = {
+          id_siswa: authStore.user?.siswa?.id_siswa,
+          tanggal: form.value.tanggal,
+          waktu_datang: now,
+        };
+        await axios.post("/api/presensi", payload);
+      } else if (presensiType.value === "pulang") {
+        await axios.put(`/api/presensi/${form.value.id}`, {
+          waktu_pulang: now,
+        });
+      }
     } else {
-      await axios.post("/api/presensi", payload);
+      const payload = { ...form.value };
+      if (!payload.waktu_datang) delete payload.waktu_datang;
+      if (!payload.waktu_pulang) delete payload.waktu_pulang;
+      if (form.value.id) {
+        await axios.put(`/api/presensi/${form.value.id}`, payload);
+      } else {
+        await axios.post("/api/presensi", payload);
+      }
     }
     batal();
     load();
     notif.showMessage("Presensi berhasil disimpan");
   } catch (e) {
-    notif.showMessage(e.response?.data?.message || "Gagal menyimpan", "error");
+    const msg = e.response?.data?.message || "";
+    if (msg.includes("Duplicate entry")) {
+      notif.showMessage("Anda sudah melakukan presensi hari ini", "warning");
+    } else {
+      notif.showMessage(msg || "Gagal menyimpan", "error");
+    }
   } finally {
     loading.value = false;
   }
