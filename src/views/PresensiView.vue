@@ -93,23 +93,7 @@
                   Tidak Valid
                 </button>
               </template>
-              <template v-else-if="authStore.isAdmin">
-                <button
-                  @click="edit(item)"
-                  class="text-blue-600 hover:text-blue-800 mr-2"
-                  title="Edit"
-                >
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button
-                  @click="hapus(item.id_presensi)"
-                  class="text-red-600 hover:text-red-800"
-                  title="Hapus"
-                >
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </template>
-              <template v-else-if="authStore.isSiswa">
+              <template v-else-if="authStore.isSiswa || authStore.isAdmin">
                 <button
                   @click="showDetail(item)"
                   class="text-blue-600 hover:text-blue-800"

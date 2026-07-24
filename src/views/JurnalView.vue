@@ -34,11 +34,7 @@
                 <button @click="validasi(item.id_jurnal, 'valid')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 mr-1">Valid</button>
                 <button @click="validasi(item.id_jurnal, 'tidak_valid')" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Tidak Valid</button>
               </template>
-              <template v-else-if="authStore.isAdmin">
-                <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-                <button @click="hapus(item.id_jurnal)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
-              </template>
-              <template v-else-if="authStore.isSiswa">
+              <template v-else-if="authStore.isSiswa || authStore.isAdmin">
                 <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800" title="Lihat Detail"><i class="fas fa-eye"></i></button>
               </template>
               <span v-else :class="['text-xs', darkMode ? 'text-gray-500' : 'text-gray-400']">-</span>
