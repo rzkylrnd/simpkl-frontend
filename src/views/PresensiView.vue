@@ -109,6 +109,15 @@
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </template>
+              <template v-else-if="authStore.isSiswa">
+                <button
+                  @click="showDetail(item)"
+                  class="text-blue-600 hover:text-blue-800"
+                  title="Lihat Detail"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </template>
               <span
                 v-else
                 :class="[
@@ -241,6 +250,33 @@
         </form>
       </div>
     </div>
+
+    <div
+      v-if="showDetailModal"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center"
+    >
+      <div
+        :class="[
+          'p-6 rounded shadow-lg w-full max-w-md',
+          darkMode ? 'bg-gray-800' : 'bg-white',
+        ]"
+      >
+        <h3 class="text-lg font-bold mb-4">Detail Presensi</h3>
+        <div class="space-y-2 text-sm">
+          <p><span class="font-semibold">Tanggal:</span> {{ detailItem?.tanggal }}</p>
+          <p><span class="font-semibold">Waktu Datang:</span> {{ detailItem?.waktu_datang ? detailItem.waktu_datang.slice(0,5) + ' WIB' : '-' }}</p>
+          <p><span class="font-semibold">Waktu Pulang:</span> {{ detailItem?.waktu_pulang ? detailItem.waktu_pulang.slice(0,5) + ' WIB' : '-' }}</p>
+          <p><span class="font-semibold">Status:</span>
+            <span v-if="detailItem?.status_validasi === 'valid'" class="text-green-600 font-bold">Valid</span>
+            <span v-else-if="detailItem?.status_validasi === 'tidak_valid'" class="text-red-600 font-bold">Tidak Valid</span>
+            <span v-else class="text-yellow-600">Menunggu</span>
+          </p>
+        </div>
+        <div class="flex justify-end mt-4">
+          <button @click="showDetailModal = false" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']">Tutup</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -258,6 +294,8 @@ const darkMode = computed(() => themeStore.darkMode);
 
 const data = ref([]);
 const showForm = ref(false);
+const showDetailModal = ref(false);
+const detailItem = ref(null);
 const loading = ref(false);
 const presensiType = ref("");
 const form = ref({
@@ -313,6 +351,11 @@ function openForm() {
     };
   }
   showForm.value = true;
+}
+
+function showDetail(item) {
+  detailItem.value = item;
+  showDetailModal.value = true;
 }
 
 function edit(item) {

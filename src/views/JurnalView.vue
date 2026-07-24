@@ -13,6 +13,7 @@
             <th class="p-2 text-left">Kegiatan</th>
             <th class="p-2 text-left">Hasil</th>
             <th class="p-2 text-left">Kendala</th>
+            <th class="p-2 text-left">Status</th>
             <th class="p-2">Aksi</th>
           </tr>
         </thead>
@@ -24,9 +25,21 @@
             <td class="p-2 max-w-[150px] truncate">{{ item.hasil || '-' }}</td>
             <td class="p-2 max-w-[150px] truncate">{{ item.kendala || '-' }}</td>
             <td class="p-3 text-center whitespace-nowrap">
-              <template v-if="authStore.isAdmin">
+              <span v-if="item.status_validasi === 'valid'" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Valid</span>
+              <span v-else-if="item.status_validasi === 'tidak_valid'" class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Tidak Valid</span>
+              <span v-else class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Menunggu</span>
+            </td>
+            <td class="p-3 text-center whitespace-nowrap">
+              <template v-if="authStore.isPembimbingIndustri && item.status_validasi === 'menunggu'">
+                <button @click="validasi(item.id_jurnal, 'valid')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 mr-1">Valid</button>
+                <button @click="validasi(item.id_jurnal, 'tidak_valid')" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Tidak Valid</button>
+              </template>
+              <template v-else-if="authStore.isAdmin">
                 <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
                 <button @click="hapus(item.id_jurnal)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+              </template>
+              <template v-else-if="authStore.isSiswa">
+                <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800" title="Lihat Detail"><i class="fas fa-eye"></i></button>
               </template>
               <span v-else :class="['text-xs', darkMode ? 'text-gray-500' : 'text-gray-400']">-</span>
             </td>
@@ -69,6 +82,26 @@
         </form>
       </div>
     </div>
+
+    <div v-if="showDetailModal" class="fixed inset-0 bg-black/50 flex items-center justify-center">
+      <div :class="['p-6 rounded shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'bg-white']">
+        <h3 class="text-lg font-bold mb-4">Detail Jurnal</h3>
+        <div class="space-y-2 text-sm">
+          <p><span class="font-semibold">Tanggal:</span> {{ detailItem?.tanggal }}</p>
+          <p><span class="font-semibold">Kegiatan:</span> {{ detailItem?.kegiatan }}</p>
+          <p><span class="font-semibold">Hasil:</span> {{ detailItem?.hasil || '-' }}</p>
+          <p><span class="font-semibold">Kendala:</span> {{ detailItem?.kendala || '-' }}</p>
+          <p><span class="font-semibold">Status:</span>
+            <span v-if="detailItem?.status_validasi === 'valid'" class="text-green-600 font-bold">Valid</span>
+            <span v-else-if="detailItem?.status_validasi === 'tidak_valid'" class="text-red-600 font-bold">Tidak Valid</span>
+            <span v-else class="text-yellow-600">Menunggu</span>
+          </p>
+        </div>
+        <div class="flex justify-end mt-4">
+          <button @click="showDetailModal = false" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']">Tutup</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -87,6 +120,8 @@ const darkMode = computed(() => themeStore.darkMode)
 const loading = ref(false)
 const data = ref([])
 const showForm = ref(false)
+const showDetailModal = ref(false)
+const detailItem = ref(null)
 const form = ref({ id: null, id_siswa: '', tanggal: '', kegiatan: '', hasil: '', kendala: '' })
 
 onMounted(() => { load() })
@@ -103,6 +138,11 @@ async function load() {
 function openForm() {
   form.value = { id: null, id_siswa: authStore.user?.siswa?.id_siswa || '', tanggal: '', kegiatan: '', hasil: '', kendala: '' }
   showForm.value = true
+}
+
+function showDetail(item) {
+  detailItem.value = item
+  showDetailModal.value = true
 }
 
 function edit(item) {
@@ -134,6 +174,16 @@ async function simpan() {
     notif.showMessage(e.response?.data?.message || 'Gagal menyimpan', 'error')
   } finally {
     loading.value = false
+  }
+}
+
+async function validasi(id, status) {
+  try {
+    await axios.put(`/api/jurnal/${id}/validasi`, { status_validasi: status })
+    load()
+    notif.showMessage('Status jurnal berhasil divalidasi')
+  } catch (e) {
+    notif.showMessage('Gagal validasi', 'error')
   }
 }
 
