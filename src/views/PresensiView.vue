@@ -93,7 +93,7 @@
                   Tidak Valid
                 </button>
               </template>
-              <template v-else-if="authStore.isAdmin || authStore.isSiswa">
+              <template v-else-if="authStore.isAdmin">
                 <button
                   @click="edit(item)"
                   class="text-blue-600 hover:text-blue-800 mr-2"
