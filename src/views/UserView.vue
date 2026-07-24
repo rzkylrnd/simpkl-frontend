@@ -112,6 +112,25 @@
                   :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 placeholder-gray-400']" />
               </div>
             </div>
+            <div :class="['mb-4 pt-4 border-t', darkMode ? 'border-gray-700' : 'border-gray-200']">
+              <p :class="['text-xs font-semibold uppercase tracking-wider mb-3', darkMode ? 'text-gray-400' : 'text-gray-500']">Penempatan</p>
+              <div class="mb-4">
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Tempat PKL</label>
+                <select v-model="form.id_tempat_pkl" required
+                  :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']">
+                  <option value="">-- Pilih Tempat PKL --</option>
+                  <option v-for="t in tempatPkl" :key="t.id_tempat_pkl" :value="t.id_tempat_pkl">{{ t.nama_perusahaan }}</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Pembimbing Industri</label>
+                <select v-model="form.id_pembimbing_industri" required
+                  :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']">
+                  <option value="">-- Pilih Pembimbing Industri --</option>
+                  <option v-for="p in pembimbingIndustri" :key="p.id" :value="p.id">{{ p.nama }}</option>
+                </select>
+              </div>
+            </div>
           </template>
 
           <div class="flex gap-3 justify-end pt-4 border-t" :class="darkMode ? 'border-gray-700' : 'border-gray-200'">
@@ -142,15 +161,31 @@ const darkMode = computed(() => themeStore.darkMode)
 const loading = ref(false)
 const data = ref([])
 const sekolah = ref([])
+const tempatPkl = ref([])
+const pembimbingIndustri = ref([])
 const showForm = ref(false)
-const form = ref({ id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '' })
+const form = ref({ id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '' })
 
-onMounted(() => { load(); loadSekolah() })
+onMounted(() => { load(); loadSekolah(); loadTempatPkl(); loadPembimbingIndustri() })
 
 async function loadSekolah() {
   try {
     const res = await axios.get('/api/sekolah')
     sekolah.value = res.data.data
+  } catch (e) {}
+}
+
+async function loadTempatPkl() {
+  try {
+    const res = await axios.get('/api/tempat-pkl')
+    tempatPkl.value = res.data.data
+  } catch (e) {}
+}
+
+async function loadPembimbingIndustri() {
+  try {
+    const res = await axios.get('/api/users')
+    pembimbingIndustri.value = res.data.data.filter(u => u.role === 'pembimbing_industri')
   } catch (e) {}
 }
 
@@ -169,13 +204,15 @@ function edit(item) {
     id: item.id, nama: item.nama, email: item.email, password: '', role: item.role,
     id_sekolah: s?.id_sekolah || '', nis: s?.nis || '', kelas: s?.kelas || '',
     jurusan: s?.jurusan || '', alamat: s?.alamat || '', telp: s?.telp || '',
+    id_tempat_pkl: s?.penempatan?.id_tempat_pkl || '',
+    id_pembimbing_industri: s?.penempatan?.id_pembimbing_industri || '',
   }
   showForm.value = true
 }
 
 function batal() {
   showForm.value = false
-  form.value = { id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '' }
+  form.value = { id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '' }
 }
 
 async function simpan() {
