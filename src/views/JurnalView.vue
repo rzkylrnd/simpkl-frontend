@@ -82,7 +82,7 @@
     <div v-if="showDetailModal" class="fixed inset-0 bg-black/50 flex items-center justify-center">
       <div :class="['p-6 rounded shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'bg-white']">
         <h3 class="text-lg font-bold mb-4">Detail Jurnal</h3>
-        <div class="space-y-2 text-sm">
+        <div class="space-y-2 text-md">
           <p><span class="font-semibold">Tanggal:</span> {{ detailItem?.tanggal }}</p>
           <p><span class="font-semibold">Kegiatan:</span> {{ detailItem?.kegiatan }}</p>
           <p><span class="font-semibold">Hasil:</span> {{ detailItem?.hasil || '-' }}</p>

@@ -47,7 +47,7 @@
             <input v-else :value="selectedSiswaNama" disabled :class="['w-full border px-3 py-2 rounded bg-gray-100', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100']" />
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Tempat PKL</label>
+            <label class="block text-sm mb-1">Penempatan Bidang PKL</label>
             <select v-model="form.id_tempat_pkl" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
               <option value="">-- Pilih --</option>
               <option v-for="t in tempatPkl" :key="t.id_tempat_pkl" :value="t.id_tempat_pkl">{{ t.nama_perusahaan }}</option>
@@ -55,15 +55,15 @@
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Guru Pembimbing</label>
-            <select v-model="form.id_guru_pembimbing" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
-              <option value="">-- Optional --</option>
+            <select v-model="form.id_guru_pembimbing" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+              <option value="">-- Pilih Guru Pembimbing --</option>
               <option v-for="g in guru" :key="g.id" :value="g.id">{{ g.nama }}</option>
             </select>
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Pembimbing Industri</label>
-            <select v-model="form.id_pembimbing_industri" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
-              <option value="">-- Optional --</option>
+            <select v-model="form.id_pembimbing_industri" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+              <option value="">-- Pilih Pembimbing Industri --</option>
               <option v-for="p in industri" :key="p.id" :value="p.id">{{ p.nama }}</option>
             </select>
           </div>
@@ -154,8 +154,6 @@ async function simpan() {
   loading.value = true
   try {
     const payload = { ...form.value }
-    if (!payload.id_guru_pembimbing) payload.id_guru_pembimbing = null
-    if (!payload.id_pembimbing_industri) payload.id_pembimbing_industri = null
     if (form.value.id) {
       await axios.put(`/api/penempatan/${form.value.id}`, payload)
     } else {

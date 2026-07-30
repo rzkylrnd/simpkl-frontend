@@ -130,6 +130,26 @@
                   <option v-for="p in pembimbingIndustri" :key="p.id" :value="p.id">{{ p.nama }}</option>
                 </select>
               </div>
+              <div class="mb-4">
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Guru Pembimbing</label>
+                <select v-model="form.id_guru_pembimbing" required
+                  :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']">
+                  <option value="">-- Pilih Guru Pembimbing --</option>
+                  <option v-for="g in guruPembimbing" :key="g.id" :value="g.id">{{ g.nama }}</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Tanggal Mulai</label>
+                  <input v-model="form.tanggal_mulai" type="date"
+                    :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']" />
+                </div>
+                <div>
+                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Tanggal Selesai</label>
+                  <input v-model="form.tanggal_selesai" type="date"
+                    :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']" />
+                </div>
+              </div>
             </div>
           </template>
 
@@ -163,10 +183,11 @@ const data = ref([])
 const sekolah = ref([])
 const tempatPkl = ref([])
 const pembimbingIndustri = ref([])
+const guruPembimbing = ref([])
 const showForm = ref(false)
-const form = ref({ id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '' })
+const form = ref({ id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '', id_guru_pembimbing: '', tanggal_mulai: '', tanggal_selesai: '' })
 
-onMounted(() => { load(); loadSekolah(); loadTempatPkl(); loadPembimbingIndustri() })
+onMounted(() => { load(); loadSekolah(); loadTempatPkl(); loadPembimbingIndustri(); loadGuruPembimbing() })
 
 async function loadSekolah() {
   try {
@@ -189,6 +210,13 @@ async function loadPembimbingIndustri() {
   } catch (e) {}
 }
 
+async function loadGuruPembimbing() {
+  try {
+    const res = await axios.get('/api/users')
+    guruPembimbing.value = res.data.data.filter(u => u.role === 'guru_pembimbing')
+  } catch (e) {}
+}
+
 async function load() {
   try {
     const res = await axios.get('/api/users')
@@ -206,13 +234,16 @@ function edit(item) {
     jurusan: s?.jurusan || '', alamat: s?.alamat || '', telp: s?.telp || '',
     id_tempat_pkl: s?.penempatan?.id_tempat_pkl || '',
     id_pembimbing_industri: s?.penempatan?.id_pembimbing_industri || '',
+    id_guru_pembimbing: s?.penempatan?.id_guru_pembimbing || '',
+    tanggal_mulai: s?.penempatan?.tanggal_mulai || '',
+    tanggal_selesai: s?.penempatan?.tanggal_selesai || '',
   }
   showForm.value = true
 }
 
 function batal() {
   showForm.value = false
-  form.value = { id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '' }
+  form.value = { id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '', id_guru_pembimbing: '', tanggal_mulai: '', tanggal_selesai: '' }
 }
 
 async function simpan() {

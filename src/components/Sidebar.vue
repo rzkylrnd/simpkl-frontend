@@ -1,19 +1,26 @@
 <template>
-  <aside :class="['w-64 bg-blue-700 text-white flex flex-col transition-colors duration-300', darkMode ? 'bg-gray-800' : 'bg-blue-700']">
-    <div class="p-4 text-lg font-bold border-b border-white/20 flex items-center gap-2">
-      <i class="fas fa-graduation-cap text-xl"></i>
+  <aside :class="['w-64 flex flex-col transition-all duration-300', darkMode ? 'bg-gray-800' : 'bg-gradient-to-b from-blue-700 to-blue-900']">
+    <div :class="['p-4 text-lg font-bold flex items-center gap-2', darkMode ? 'border-b border-gray-700' : 'border-b border-white/20']">
+      <div :class="'w-8 h-8 rounded-lg flex items-center justify-center text-sm ' + (darkMode ? 'bg-blue-600' : 'bg-white/20')">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
       <span>SIMPKL</span>
     </div>
-    <nav class="flex-1 p-2 space-y-1">
+    <nav class="flex-1 p-2 space-y-0.5 overflow-y-auto">
       <router-link v-for="item in filteredMenu" :key="item.path" :to="item.path"
-        class="flex items-center gap-3 px-3 py-2 rounded hover:bg-white/10 transition-colors"
-        :class="{ 'bg-white/20': $route.path === item.path }"
+        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200"
+        :class="[
+          $route.path === item.path
+            ? (darkMode ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white/20 text-white shadow-md')
+            : (darkMode ? 'text-gray-300 hover:bg-gray-700 hover:translate-x-1 hover:shadow-md' : 'text-white/80 hover:bg-white/10 hover:translate-x-1 hover:shadow-lg')
+        ]"
         @click="$emit('close')">
-        <span class="w-5 text-center" v-html="item.icon"></span>
-        <span>{{ item.label }}</span>
+        <span class="w-5 text-center text-sm" :class="$route.path === item.path ? 'scale-110' : ''" v-html="item.icon"></span>
+        <span class="text-sm font-medium">{{ item.label }}</span>
+        <span v-if="$route.path === item.path" :class="'ml-auto w-1.5 h-1.5 rounded-full ' + (darkMode ? 'bg-blue-300' : 'bg-white')"></span>
       </router-link>
     </nav>
-    <div class="p-4 border-t border-white/20 text-sm">
+    <div :class="['p-4 text-sm', darkMode ? 'border-t border-gray-700' : 'border-t border-white/20']">
       <div class="flex items-center gap-2">
         <i class="fas fa-user-circle text-xl"></i>
         <div class="truncate">

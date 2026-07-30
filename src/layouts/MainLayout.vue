@@ -12,7 +12,19 @@
           </button>
           <h1 class="text-lg lg:text-xl font-semibold truncate">{{ pageTitle }}</h1>
         </div>
-        <div class="flex items-center gap-2 lg:gap-4">
+          <div class="flex items-center gap-2 lg:gap-4">
+          <div :class="['text-xs lg:text-sm leading-tight px-3 py-1.5 rounded-lg border hidden sm:block', darkMode ? 'bg-gray-700 border-gray-600' : 'bg-blue-50 border-blue-200']">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-calendar-alt text-blue-500 text-[10px]"></i>
+              <span class="font-medium">{{ clock.day }}, {{ clock.date }}</span>
+            </div>
+            <div class="flex items-center gap-2 mt-0.5">
+              <i class="fas fa-clock text-blue-500 text-[10px]"></i>
+              <span class="font-bold text-blue-600 dark:text-blue-400 text-sm lg:text-base tabular-nums">{{ clock.time }}</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold text-gray-500">WIB</span>
+            </div>
+          </div>
+          <div class="h-6 border-l" :class="darkMode ? 'border-gray-600' : 'border-gray-300'"></div>
           <button @click="themeStore.toggle()" class="px-2 lg:px-3 py-1 rounded border text-sm"
             :class="darkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-200'">
             <i :class="darkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
@@ -34,7 +46,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '../stores/theme'
@@ -51,6 +63,39 @@ const darkMode = computed(() => themeStore.darkMode)
 
 const showSidebar = ref(false)
 const showLogoutModal = ref(false)
+const clock = ref({ day: '', date: '', time: '' })
+let clockInterval = null
+let serverSeconds = 0
+
+onMounted(async () => {
+  await fetchServerTime()
+  clockInterval = setInterval(() => {
+    if (serverSeconds > 0) {
+      serverSeconds++
+      const h = String(Math.floor(serverSeconds / 3600) % 24).padStart(2, '0')
+      const m = String(Math.floor(serverSeconds / 60) % 60).padStart(2, '0')
+      const s = String(serverSeconds % 60).padStart(2, '0')
+      clock.value.time = `${h}:${m}:${s}`
+    }
+  }, 1000)
+})
+
+onUnmounted(() => {
+  if (clockInterval) clearInterval(clockInterval)
+})
+
+async function fetchServerTime() {
+  try {
+    const res = await axios.get('/api/server-time')
+    clock.value = {
+      day: res.data.day,
+      date: res.data.date,
+      time: res.data.time,
+    }
+    const [h, m, s] = res.data.time.split(':').map(Number)
+    serverSeconds = h * 3600 + m * 60 + s
+  } catch (e) {}
+}
 
 const pageTitle = computed(() => {
   const titles = {
