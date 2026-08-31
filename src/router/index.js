@@ -49,6 +49,11 @@ const routes = [
         component: () => import("../views/PresensiView.vue"),
       },
       {
+        path: "jam-presensi",
+        name: "JamPresensi",
+        component: () => import("../views/JamPresensiView.vue"),
+      },
+      {
         path: "jurnal",
         name: "Jurnal",
         component: () => import("../views/JurnalView.vue"),

@@ -2,23 +2,23 @@
   <div>
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Data Penempatan</h3>
-      <button @click="batal(); showForm = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tambah</button>
+      <button @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Tambah</button>
     </div>
-    <div :class="['rounded shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white']">
+    <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
       <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'bg-gray-50'">
+        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
           <tr>
-            <th class="p-2 text-left">Siswa</th>
-            <th class="p-2 text-left">Perusahaan</th>
-            <th class="p-2 text-left">Guru Pembimbing</th>
-            <th class="p-2 text-left">Pembimbing Industri</th>
-            <th class="p-2 text-left">Mulai</th>
-            <th class="p-2 text-left">Selesai</th>
-            <th class="p-2">Aksi</th>
+            <th class="p-3 text-left">Siswa</th>
+            <th class="p-3 text-left">Perusahaan</th>
+            <th class="p-3 text-left">Guru Pembimbing</th>
+            <th class="p-3 text-left">Pembimbing Industri</th>
+            <th class="p-3 text-left">Mulai</th>
+            <th class="p-3 text-left">Selesai</th>
+            <th class="p-3 text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, i) in data" :key="item.id_penempatan" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'hover:bg-blue-50 transition-colors']">
+          <tr v-for="(item, i) in data" :key="item.id_penempatan" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row']">
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
             <td class="p-3">{{ item.tempat_pkl?.nama_perusahaan }}</td>
             <td class="p-3">{{ item.guru_pembimbing?.nama }}</td>
@@ -35,12 +35,12 @@
     </div>
 
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center">
-      <div :class="['p-6 rounded shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'bg-white']">
+      <div :class="['p-6 rounded-xl shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'light-modal']">
         <h3 class="text-lg font-bold mb-4">{{ form.id ? 'Edit' : 'Tambah' }} Penempatan</h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
             <label class="block text-sm mb-1">Siswa</label>
-            <select v-if="!form.id" v-model="form.id_siswa" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+            <select v-if="!form.id" v-model="form.id_siswa" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
               <option value="">-- Pilih --</option>
               <option v-for="s in siswa" :key="s.id_siswa" :value="s.id_siswa">{{ s.user?.nama }}</option>
             </select>
@@ -48,36 +48,36 @@
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Penempatan Bidang PKL</label>
-            <select v-model="form.id_tempat_pkl" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+            <select v-model="form.id_tempat_pkl" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
               <option value="">-- Pilih --</option>
               <option v-for="t in tempatPkl" :key="t.id_tempat_pkl" :value="t.id_tempat_pkl">{{ t.nama_perusahaan }}</option>
             </select>
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Guru Pembimbing</label>
-            <select v-model="form.id_guru_pembimbing" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+            <select v-model="form.id_guru_pembimbing" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
               <option value="">-- Pilih Guru Pembimbing --</option>
               <option v-for="g in guru" :key="g.id" :value="g.id">{{ g.nama }}</option>
             </select>
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Pembimbing Industri</label>
-            <select v-model="form.id_pembimbing_industri" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']">
+            <select v-model="form.id_pembimbing_industri" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
               <option value="">-- Pilih Pembimbing Industri --</option>
               <option v-for="p in industri" :key="p.id" :value="p.id">{{ p.nama }}</option>
             </select>
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Tanggal Mulai</label>
-            <input v-model="form.tanggal_mulai" type="date" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+            <input v-model="form.tanggal_mulai" type="date" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
           </div>
           <div class="mb-4">
             <label class="block text-sm mb-1">Tanggal Selesai</label>
-            <input v-model="form.tanggal_selesai" type="date" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']" />
+            <input v-model="form.tanggal_selesai" type="date" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
           </div>
           <div class="flex gap-2 justify-end">
-            <button type="button" @click="batal" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']">Batal</button>
-            <button type="submit" :disabled="loading" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"><i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? "Menyimpan..." : "Simpan" }}</button>
+            <button type="button" @click="batal" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']">Batal</button>
+            <button type="submit" :disabled="loading" :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50', darkMode ? '' : 'shadow-sm']"><i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? "Menyimpan..." : "Simpan" }}</button>
           </div>
         </form>
       </div>

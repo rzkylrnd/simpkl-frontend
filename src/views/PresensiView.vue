@@ -5,26 +5,29 @@
       <button
         v-if="authStore.isSiswa"
         @click="openForm"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        :class="[
+          'px-4 py-2 rounded-lg font-medium text-white transition-all',
+          darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary',
+        ]"
       >
-        Tambah
+        Lakukan Presensi
       </button>
     </div>
     <div
       :class="[
-        'rounded shadow overflow-x-auto',
-        darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white',
+        'rounded-xl shadow overflow-x-auto',
+        darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card',
       ]"
     >
       <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'bg-gray-50'">
+        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
           <tr>
-            <th class="p-2 text-left">Siswa</th>
-            <th class="p-2 text-left">Tanggal</th>
-            <th class="p-2 text-left">Datang</th>
-            <th class="p-2 text-left">Pulang</th>
-            <th class="p-2 text-left">Status</th>
-            <th class="p-2">Aksi</th>
+            <th class="p-3 text-left">Siswa</th>
+            <th class="p-3 text-left">Tanggal</th>
+            <th class="p-3 text-left">Datang</th>
+            <th class="p-3 text-left">Pulang</th>
+            <th class="p-3 text-left">Status</th>
+            <th class="p-3 text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -41,7 +44,7 @@
                   : 'bg-gray-50',
               darkMode
                 ? 'hover:bg-gray-600 transition-colors'
-                : 'hover:bg-blue-50 transition-colors',
+                : 'light-table-row',
             ]"
           >
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
@@ -122,12 +125,19 @@
     >
       <div
         :class="[
-          'p-6 rounded shadow-lg w-full max-w-md',
-          darkMode ? 'bg-gray-800' : 'bg-white',
+          'p-6 rounded-xl shadow-lg w-full max-w-md',
+          darkMode ? 'bg-gray-800' : 'light-modal',
         ]"
       >
         <h3 class="text-lg font-bold mb-4">
-          {{ form.id && !authStore.isSiswa ? "Edit" : presensiType ? "Presensi " + (presensiType === "masuk" ? "Masuk" : "Pulang") : "Tambah" }} Presensi
+          {{
+            form.id && !authStore.isSiswa
+              ? "Edit"
+              : presensiType
+                ? "Presensi " + (presensiType === "masuk" ? "Masuk" : "Pulang")
+                : "Tambah"
+          }}
+          Presensi
         </h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
@@ -152,14 +162,19 @@
               :readonly="authStore.isSiswa && !form.id"
               :class="[
                 'w-full border px-3 py-2 rounded',
-                darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
+                darkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'light-input',
                 authStore.isSiswa && !form.id
                   ? 'opacity-70 cursor-not-allowed'
                   : '',
               ]"
             />
           </div>
-          <div v-if="authStore.isSiswa && presensiType === 'masuk' && !form.id" class="mb-3">
+          <div
+            v-if="authStore.isSiswa && presensiType === 'masuk' && !form.id"
+            class="mb-3"
+          >
             <label class="block text-sm mb-1">Waktu Datang</label>
             <p
               :class="[
@@ -170,7 +185,10 @@
               <i class="fas fa-clock mr-1"></i>Akan terisi otomatis saat simpan
             </p>
           </div>
-          <div v-else-if="authStore.isSiswa && presensiType === 'pulang'" class="mb-3">
+          <div
+            v-else-if="authStore.isSiswa && presensiType === 'pulang'"
+            class="mb-3"
+          >
             <label class="block text-sm mb-1">Waktu Pulang</label>
             <p
               :class="[
@@ -191,11 +209,16 @@
               @input="onTimeInput($event, 'waktu_datang')"
               :class="[
                 'w-full border px-3 py-2 rounded',
-                darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
+                darkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'light-input',
               ]"
             />
           </div>
-          <div v-if="!authStore.isSiswa || (authStore.isSiswa && form.id)" class="mb-3">
+          <div
+            v-if="!authStore.isSiswa || (authStore.isSiswa && form.id)"
+            class="mb-3"
+          >
             <label class="block text-sm mb-1">Waktu Pulang</label>
             <input
               :value="form.waktu_pulang"
@@ -205,7 +228,9 @@
               @input="onTimeInput($event, 'waktu_pulang')"
               :class="[
                 'w-full border px-3 py-2 rounded',
-                darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
+                darkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'light-input',
               ]"
             />
           </div>
@@ -217,7 +242,7 @@
                 'px-4 py-2 border rounded',
                 darkMode
                   ? 'border-gray-600 hover:bg-gray-700'
-                  : 'hover:bg-gray-100',
+                  : 'light-btn-ghost text-gray-700',
               ]"
             >
               Batal
@@ -225,7 +250,10 @@
             <button
               type="submit"
               :disabled="loading"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              :class="[
+                'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50',
+                darkMode ? '' : 'shadow-sm',
+              ]"
             >
               <i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i
               >{{ loading ? "Menyimpan..." : "Simpan" }}
@@ -241,23 +269,59 @@
     >
       <div
         :class="[
-          'p-6 rounded shadow-lg w-full max-w-md',
-          darkMode ? 'bg-gray-800' : 'bg-white',
+          'p-6 rounded-xl shadow-lg w-full max-w-md',
+          darkMode ? 'bg-gray-800' : 'light-modal',
         ]"
       >
         <h3 class="text-lg font-bold mb-4">Detail Presensi</h3>
         <div class="space-y-2 text-sm">
-          <p><span class="font-semibold">Tanggal:</span> {{ detailItem?.tanggal }}</p>
-          <p><span class="font-semibold">Waktu Datang:</span> {{ detailItem?.waktu_datang ? detailItem.waktu_datang.slice(0,5) + ' WIB' : '-' }}</p>
-          <p><span class="font-semibold">Waktu Pulang:</span> {{ detailItem?.waktu_pulang ? detailItem.waktu_pulang.slice(0,5) + ' WIB' : '-' }}</p>
-          <p><span class="font-semibold">Status:</span>
-            <span v-if="detailItem?.status_validasi === 'valid'" class="text-green-600 font-bold">Valid</span>
-            <span v-else-if="detailItem?.status_validasi === 'tidak_valid'" class="text-red-600 font-bold">Tidak Valid</span>
+          <p>
+            <span class="font-semibold">Tanggal:</span>
+            {{ detailItem?.tanggal }}
+          </p>
+          <p>
+            <span class="font-semibold">Waktu Datang:</span>
+            {{
+              detailItem?.waktu_datang
+                ? detailItem.waktu_datang.slice(0, 5) + " WIB"
+                : "-"
+            }}
+          </p>
+          <p>
+            <span class="font-semibold">Waktu Pulang:</span>
+            {{
+              detailItem?.waktu_pulang
+                ? detailItem.waktu_pulang.slice(0, 5) + " WIB"
+                : "-"
+            }}
+          </p>
+          <p>
+            <span class="font-semibold">Status:</span>
+            <span
+              v-if="detailItem?.status_validasi === 'valid'"
+              class="text-green-600 font-bold"
+              >Valid</span
+            >
+            <span
+              v-else-if="detailItem?.status_validasi === 'tidak_valid'"
+              class="text-red-600 font-bold"
+              >Tidak Valid</span
+            >
             <span v-else class="text-yellow-600">Menunggu</span>
           </p>
         </div>
         <div class="flex justify-end mt-4">
-          <button @click="showDetailModal = false" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']">Tutup</button>
+          <button
+            @click="showDetailModal = false"
+            :class="[
+              'px-4 py-2 border rounded',
+              darkMode
+                ? 'border-gray-600 hover:bg-gray-700'
+                : 'light-btn-ghost text-gray-700',
+            ]"
+          >
+            Tutup
+          </button>
         </div>
       </div>
     </div>
@@ -304,16 +368,41 @@ async function load() {
   }
 }
 
-function openForm() {
+async function getServerTime() {
+  try {
+    const res = await axios.get("/api/server-time");
+    return res.data.time.slice(0, 5);
+  } catch {
+    return null;
+  }
+}
+
+function isPulangAllowed(jam) {
+  return jam !== null && jam !== undefined && jam >= "15:30";
+}
+
+async function openForm() {
   const today = new Date().toISOString().slice(0, 10);
   const todayRecord = data.value.find(
-    (d) => d.tanggal === today && d.id_siswa === authStore.user?.siswa?.id_siswa
+    (d) =>
+      d.tanggal === today && d.id_siswa === authStore.user?.siswa?.id_siswa,
   );
   if (todayRecord && todayRecord.waktu_datang && todayRecord.waktu_pulang) {
-    notif.showMessage("Anda sudah melakukan presensi masuk dan pulang hari ini", "warning");
+    notif.showMessage(
+      "Anda sudah melakukan presensi masuk dan pulang hari ini",
+      "warning",
+    );
     return;
   }
   if (todayRecord && todayRecord.waktu_datang) {
+    const jamServer = await getServerTime();
+    if (!isPulangAllowed(jamServer)) {
+      notif.showMessage(
+        "Belum bisa presensi pulang. Minimal pukul 15:30 WIB.",
+        "warning",
+      );
+      return;
+    }
     presensiType.value = "pulang";
     form.value = {
       id: todayRecord.id_presensi,
@@ -388,6 +477,14 @@ async function simpan() {
         };
         await axios.post("/api/presensi", payload);
       } else if (presensiType.value === "pulang") {
+        const jamServer = await getServerTime();
+        if (!isPulangAllowed(jamServer)) {
+          notif.showMessage(
+            "Belum bisa presensi pulang. Minimal pukul 15:30 WIB.",
+            "warning",
+          );
+          return;
+        }
         await axios.put(`/api/presensi/${form.value.id}`, {
           waktu_pulang: now,
         });

@@ -2,22 +2,22 @@
   <div>
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Data Laporan Akhir</h3>
-      <button v-if="authStore.isSiswa" @click="batal(); showForm = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tambah</button>
+      <button v-if="authStore.isSiswa" @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Tambah</button>
     </div>
-    <div :class="['rounded shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white']">
+    <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
       <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'bg-gray-50'">
+        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
           <tr>
-            <th class="p-2 text-left">Siswa</th>
-            <th class="p-2 text-left">Judul</th>
-            <th class="p-2 text-left">Link</th>
-            <th class="p-2 text-left">File</th>
-            <th class="p-2 text-left">Status</th>
-            <th class="p-2">Aksi</th>
+            <th class="p-3 text-left">Siswa</th>
+            <th class="p-3 text-left">Judul</th>
+            <th class="p-3 text-left">Link</th>
+            <th class="p-3 text-left">File</th>
+            <th class="p-3 text-left">Status</th>
+            <th class="p-3 text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, i) in data" :key="item.id_laporan" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'hover:bg-blue-50 transition-colors']">
+          <tr v-for="(item, i) in data" :key="item.id_laporan" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row']">
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
             <td class="p-2 max-w-[200px] truncate">{{ item.judul_laporan }}</td>
             <td class="p-3">
@@ -52,7 +52,7 @@
 
     <!-- Form Modal -->
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="batal">
-      <div :class="['w-full max-w-md mx-4 rounded-2xl shadow-2xl', darkMode ? 'bg-gray-800' : 'bg-white']">
+      <div :class="['w-full max-w-md mx-4 rounded-2xl shadow-2xl', darkMode ? 'bg-gray-800' : 'light-modal']">
         <div :class="['flex items-center justify-between px-6 py-4 border-b', darkMode ? 'border-gray-700' : 'border-gray-200']">
           <h3 class="text-lg font-bold">{{ form.id ? 'Edit' : 'Tambah' }} Laporan</h3>
           <button @click="batal" :class="'w-8 h-8 rounded-lg flex items-center justify-center hover:' + (darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-500')">
@@ -62,14 +62,14 @@
         <form @submit.prevent="simpan" class="p-6">
           <div v-if="!authStore.isSiswa" class="mb-3">
             <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Siswa</label>
-            <select v-model="form.id_siswa" required :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']">
+            <select v-model="form.id_siswa" required :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
               <option value="">-- Pilih --</option>
               <option v-for="s in siswa" :key="s.id_siswa" :value="s.id_siswa">{{ s.user?.nama }}</option>
             </select>
           </div>
           <div class="mb-3">
             <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Judul Laporan</label>
-            <input v-model="form.judul_laporan" type="text" required :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']" />
+            <input v-model="form.judul_laporan" type="text" required :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
           </div>
           <div class="mb-3">
             <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Lampiran</label>
@@ -86,19 +86,19 @@
           </div>
           <div v-if="jenisLampiran === 'file'" class="mb-3">
             <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Upload File</label>
-            <input @change="onFileChange" type="file" accept=".pdf,.doc,.docx" :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']" />
+            <input @change="onFileChange" type="file" accept=".pdf,.doc,.docx" :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
           </div>
           <div v-if="jenisLampiran === 'link'" class="mb-3">
             <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Link Laporan</label>
-            <input v-model="form.file_path" type="url" placeholder="https://docs.google.com/..." :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']" />
+            <input v-model="form.file_path" type="url" placeholder="https://docs.google.com/..." :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
           </div>
           <div class="mb-4">
             <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Catatan</label>
-            <textarea v-model="form.catatan" rows="3" :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300']"></textarea>
+            <textarea v-model="form.catatan" rows="3" :class="['w-full px-3 py-2.5 border rounded-lg', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']"></textarea>
           </div>
           <div class="flex gap-3 justify-end pt-4 border-t" :class="darkMode ? 'border-gray-700' : 'border-gray-200'">
-            <button type="button" @click="batal" :class="['px-5 py-2.5 rounded-lg text-sm font-medium transition', darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700']">Batal</button>
-            <button type="submit" :disabled="loading" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition flex items-center gap-2">
+            <button type="button" @click="batal" :class="['px-5 py-2.5 rounded-lg text-sm font-medium transition', darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'light-btn-ghost text-gray-700']">Batal</button>
+            <button type="submit" :disabled="loading" :class="['px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition flex items-center gap-2', darkMode ? '' : 'shadow-sm']">
               <i v-if="loading" class="fas fa-spinner fa-spin"></i>
               {{ loading ? "Menyimpan..." : "Simpan" }}
             </button>
@@ -109,7 +109,7 @@
 
     <!-- Detail Modal -->
     <div v-if="showDetail" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="showDetail = false">
-      <div :class="['w-full max-w-lg mx-4 rounded-2xl shadow-2xl', darkMode ? 'bg-gray-800' : 'bg-white']">
+      <div :class="['w-full max-w-lg mx-4 rounded-2xl shadow-2xl', darkMode ? 'bg-gray-800' : 'light-modal']">
         <div :class="['flex items-center justify-between px-6 py-4 border-b', darkMode ? 'border-gray-700' : 'border-gray-200']">
           <h3 class="text-lg font-bold">Detail Laporan</h3>
           <button @click="showDetail = false" :class="'w-8 h-8 rounded-lg flex items-center justify-center hover:' + (darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-500')">
@@ -133,7 +133,7 @@
 
     <!-- Cetak Modal -->
     <div v-if="showCetak" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="showCetak = false">
-      <div ref="cetakContent" :class="['w-full max-w-lg mx-4 rounded-2xl shadow-2xl', darkMode ? 'bg-gray-800' : 'bg-white']">
+      <div ref="cetakContent" :class="['w-full max-w-lg mx-4 rounded-2xl shadow-2xl', darkMode ? 'bg-gray-800' : 'light-modal']">
         <div :class="['flex items-center justify-between px-6 py-4 border-b print:hidden', darkMode ? 'border-gray-700' : 'border-gray-200']">
           <h3 class="text-lg font-bold">Cetak Laporan</h3>
           <div class="flex gap-2">

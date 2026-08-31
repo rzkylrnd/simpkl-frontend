@@ -4,13 +4,13 @@
     <p :class="['text-sm mb-6', darkMode ? 'text-gray-400' : 'text-gray-500']">{{ roleLabel }}</p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <div v-for="card in cards" :key="card.label" :class="['p-5 rounded-xl shadow-sm border transition-all hover:shadow-md hover:-translate-y-0.5', darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200']">
+      <div v-for="card in cards" :key="card.label" :class="['p-5 rounded-xl border transition-all hover:shadow-lg hover:-translate-y-0.5', darkMode ? 'bg-gray-800 border-gray-700' : 'light-card']">
         <div class="flex items-center justify-between mb-3">
-          <div :class="['w-10 h-10 rounded-lg flex items-center justify-center', card.bg]">
+          <div :class="['w-10 h-10 rounded-xl flex items-center justify-center shadow-sm', card.bg]">
             <i :class="[card.icon, 'text-white']"></i>
           </div>
         </div>
-        <p class="text-3xl font-bold">{{ stats[card.key] }}</p>
+        <p class="text-3xl font-bold tabular-nums">{{ stats[card.key] }}</p>
         <p :class="['text-sm mt-1', darkMode ? 'text-gray-400' : 'text-gray-500']">{{ card.label }}</p>
       </div>
     </div>
@@ -19,8 +19,8 @@
       <h3 class="text-lg font-semibold mb-3">Aksi Cepat</h3>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         <button v-for="act in quickActions" :key="act.label" @click="go(act.route)"
-          :class="['flex items-center gap-3 p-4 rounded-xl border transition-all hover:shadow-md hover:-translate-y-0.5', darkMode ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'bg-white border-gray-200 hover:bg-gray-50']">
-          <div :class="['w-9 h-9 rounded-lg flex items-center justify-center text-sm', act.bg]">
+          :class="['flex items-center gap-3 p-4 rounded-xl border transition-all hover:shadow-md hover:-translate-y-0.5', darkMode ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'light-card hover:bg-blue-50/50']">
+          <div :class="['w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm', act.bg]">
             <i :class="[act.icon, 'text-white']"></i>
           </div>
           <span class="text-sm font-medium text-left">{{ act.label }}</span>

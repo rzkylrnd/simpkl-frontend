@@ -4,24 +4,24 @@
       <h3 class="text-lg font-semibold">Data Sekolah</h3>
       <button
         @click="batal(); showForm = true"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']"
       >
         Tambah
       </button>
     </div>
     <div
       :class="[
-        'rounded shadow overflow-x-auto',
-        darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white',
+        'rounded-xl shadow overflow-x-auto',
+        darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card',
       ]"
     >
       <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'bg-gray-50'">
+        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
           <tr>
-            <th class="p-2 text-left">Nama Sekolah</th>
-            <th class="p-2 text-left">Alamat</th>
-            <th class="p-2 text-left">Telp</th>
-            <th class="p-2">Aksi</th>
+            <th class="p-3 text-left">Nama Sekolah</th>
+            <th class="p-3 text-left">Alamat</th>
+            <th class="p-3 text-left">Telp</th>
+            <th class="p-3 text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -30,7 +30,7 @@
             :key="item.id_sekolah"
             :class="[
               i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'),
-              darkMode ? 'hover:bg-gray-600 transition-colors' : 'hover:bg-blue-50 transition-colors',
+              darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row',
             ]"
           >
             <td class="p-3">{{ item.nama_sekolah }}</td>
@@ -63,8 +63,8 @@
     >
       <div
         :class="[
-          'p-6 rounded shadow-lg w-full max-w-md',
-          darkMode ? 'bg-gray-800' : 'bg-white',
+          'p-6 rounded-xl shadow-lg w-full max-w-md',
+          darkMode ? 'bg-gray-800' : 'light-modal',
         ]"
       >
         <h3 class="text-lg font-bold mb-4">
@@ -79,7 +79,7 @@
               required
               :class="[
                 'w-full border px-3 py-2 rounded',
-                darkMode ? 'bg-gray-700 border-gray-600 text-white' : '',
+                darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input',
               ]"
             />
           </div>
@@ -89,7 +89,7 @@
               v-model="form.alamat"
               type="text"
               required
-              :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"
+              :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']"
             />
           </div>
           <div class="mb-4">
@@ -97,21 +97,21 @@
             <input
               v-model="form.telp"
               type="text"
-              :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : '']"
+              :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']"
             />
           </div>
           <div class="flex gap-2 justify-end">
             <button
               type="button"
               @click="batal"
-              :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'hover:bg-gray-100']"
+              :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']"
             >
               Batal
             </button>
             <button
               type="submit"
               :disabled="loading"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50', darkMode ? '' : 'shadow-sm']"
             >
               <i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i
               >{{ loading ? "Menyimpan..." : "Simpan" }}
