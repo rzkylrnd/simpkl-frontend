@@ -13,8 +13,8 @@
           </div>
         </div>
         <div class="flex justify-end gap-2">
-          <button @click="$emit('cancel')" :class="['px-4 py-2 rounded-lg text-sm font-medium transition', darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'light-btn-ghost']">Cancel</button>
-          <button @click="$emit('confirm')" :class="['px-4 py-2 rounded-lg text-sm font-medium text-white transition', darkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-sm']">Yes, Logout</button>
+          <button @click="$emit('cancel')" :class="['px-4 py-2 rounded-lg text-sm font-medium transition', darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'light-btn-ghost']">Batal</button>
+          <button @click="$emit('confirm')" :class="['px-4 py-2 rounded-lg text-sm font-medium text-white transition', darkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-sm']">Ya, Logout</button>
         </div>
       </div>
     </div>
@@ -27,8 +27,8 @@ import { useThemeStore } from '../stores/theme'
 
 const props = defineProps({
   show: Boolean,
-  title: { type: String, default: 'Confirmation' },
-  message: { type: String, default: 'Are you sure you want to continue?' },
+  title: { type: String, default: 'Konfirmasi' },
+  message: { type: String, default: 'Yakin ingin melanjutkan?' },
 })
 
 defineEmits(['confirm', 'cancel'])

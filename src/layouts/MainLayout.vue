@@ -28,7 +28,7 @@
           <button @click="themeStore.toggle()" class="px-2 lg:px-3 py-1.5 rounded-lg border text-sm font-medium"
             :class="darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost'">
             <i :class="darkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
-            <span class="hidden lg:inline ml-1">{{ darkMode ? 'Light' : 'Dark' }}</span>
+            <span class="hidden lg:inline ml-1">{{ darkMode ? 'Terang' : 'Gelap' }}</span>
           </button>
           <span class="text-sm lg:text-base hidden sm:inline">{{ authStore.user?.nama }}</span>
           <button @click="handleLogout" class="px-2 lg:px-3 py-1.5 rounded-lg text-white text-sm font-medium transition-all"
@@ -41,7 +41,7 @@
         <router-view />
       </main>
       <Notification />
-      <ConfirmDialog :show="showLogoutModal" title="Confirm Logout" message="Are you sure you want to log out of the system?" @confirm="confirmLogout" @cancel="showLogoutModal = false" />
+      <ConfirmDialog :show="showLogoutModal" title="Konfirmasi Logout" message="Yakin ingin logout dari sistem?" @confirm="confirmLogout" @cancel="showLogoutModal = false" />
     </div>
   </div>
 </template>
@@ -101,16 +101,15 @@ async function fetchServerTime() {
 const pageTitle = computed(() => {
   const titles = {
     Dashboard: 'Dashboard',
-    Users: 'Users Data',
-    Sekolah: 'Schools Data',
-    TempatPkl: 'Field Data',
-    Siswa: 'Students Data',
-    Penempatan: 'Placements Data',
-    Presensi: 'Attendance Data',
-    JamPresensi: 'Set Attendance Time',
-    Jurnal: 'Journal Data',
-    Laporan: 'Reports Data',
-    Penilaian: 'Assessment Data',
+    Users: 'Data Users',
+    Sekolah: 'Data Sekolah',
+    TempatPkl: 'Data Tempat PKL',
+    Siswa: 'Data Siswa',
+    Penempatan: 'Data Penempatan',
+    Presensi: 'Data Presensi',
+    Jurnal: 'Data Jurnal',
+    Laporan: 'Data Laporan',
+    Penilaian: 'Data Penilaian',
     Profile: 'Profile',
   }
   return titles[route.name] || 'SIMPKL'

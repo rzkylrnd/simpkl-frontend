@@ -6,18 +6,18 @@
           <i class="fas fa-graduation-cap"></i>
         </div>
         <h2 :class="['text-2xl font-bold', darkMode ? 'text-white' : 'text-gray-800']">SIMPKL</h2>
-        <p :class="['text-sm mt-1', darkMode ? 'text-gray-400' : 'text-gray-500']">Field Work Practice Information System</p>
+        <p :class="['text-sm mt-1', darkMode ? 'text-gray-400' : 'text-gray-500']">Sistem Informasi Praktek Kerja Lapangan</p>
       </div>
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
           <label :class="['block text-sm font-medium mb-1', darkMode ? 'text-gray-300' : 'text-gray-700']">Email</label>
-          <input v-model="email" type="text" required placeholder="Enter email"
+          <input v-model="email" type="text" required placeholder="Masukkan email"
             :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input border-gray-200 placeholder-gray-400']" />
         </div>
         <div class="mb-6">
           <label :class="['block text-sm font-medium mb-1', darkMode ? 'text-gray-300' : 'text-gray-700']">Password</label>
           <div class="relative">
-            <input v-model="password" :type="showPassword ? 'text' : 'password'" required placeholder="Enter password"
+            <input v-model="password" :type="showPassword ? 'text' : 'password'" required placeholder="Masukkan password"
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input border-gray-200 placeholder-gray-400']" />
             <button type="button" @click="showPassword = !showPassword"
               :class="['absolute inset-y-0 right-0 px-3 flex items-center', darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-400 hover:text-gray-600']">
@@ -59,7 +59,7 @@ async function handleLogin() {
     await authStore.login(email.value, password.value)
     router.push('/')
   } catch (e) {
-    error.value = e.response?.data?.errors?.email?.[0] || 'Login failed'
+    error.value = e.response?.data?.errors?.email?.[0] || 'Login gagal'
   } finally {
     loading.value = false
   }

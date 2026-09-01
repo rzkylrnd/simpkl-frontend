@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold">Field Data</h3>
+      <h3 class="text-lg font-semibold">Data Tempat PKL</h3>
       <button
         @click="
           batal();
@@ -9,7 +9,7 @@
         "
         :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']"
       >
-        Add
+        Tambah
       </button>
     </div>
     <div
@@ -21,9 +21,9 @@
       <table class="w-full text-sm">
         <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
           <tr>
-            <th class="p-3 text-left">Field Name</th>
-            <th class="p-3 text-left">Phone</th>
-            <th class="p-3 text-center">Actions</th>
+            <th class="p-3 text-left">Nama Bidang</th>
+            <th class="p-3 text-left">Telp</th>
+            <th class="p-3 text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -56,7 +56,7 @@
               <button
                 @click="hapus(item.id_tempat_pkl)"
                 class="text-red-600 hover:text-red-800"
-                title="Delete"
+                title="Hapus"
               >
                 <i class="fas fa-trash-alt"></i>
               </button>
@@ -77,11 +77,11 @@
         ]"
       >
         <h3 class="text-lg font-bold mb-4">
-          {{ form.id ? "Edit" : "Add" }} Field
+          {{ form.id ? "Edit" : "Tambah" }} Tempat PKL
         </h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
-            <label class="block text-sm mb-1">Field Name</label>
+            <label class="block text-sm mb-1">Nama Bidang</label>
             <input
               v-model="form.nama_perusahaan"
               type="text"
@@ -93,7 +93,7 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block text-sm mb-1">Phone</label>
+            <label class="block text-sm mb-1">Telp</label>
             <input
               v-model="form.telp"
               type="text"
@@ -114,7 +114,7 @@
                   : 'light-btn-ghost text-gray-700',
               ]"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
@@ -122,7 +122,7 @@
               :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50', darkMode ? '' : 'shadow-sm']"
             >
               <i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i
-              >{{ loading ? "Saving..." : "Save" }}
+              >{{ loading ? "Menyimpan..." : "Simpan" }}
             </button>
           </div>
         </form>
@@ -153,7 +153,7 @@ async function load() {
     const res = await axios.get("/api/tempat-pkl");
     data.value = res.data.data;
   } catch (e) {
-    notif.showMessage("Failed to load data", "error");
+    notif.showMessage("Gagal memuat data", "error");
   }
 }
 
@@ -182,22 +182,22 @@ async function simpan() {
     }
     batal();
     load();
-    notif.showMessage("Field saved successfully");
+    notif.showMessage("Tempat PKL berhasil disimpan");
   } catch (e) {
-    notif.showMessage(e.response?.data?.message || "Failed to save", "error");
+    notif.showMessage(e.response?.data?.message || "Gagal menyimpan", "error");
   } finally {
     loading.value = false;
   }
 }
 
 async function hapus(id) {
-  if (!confirm("Are you sure you want to delete?")) return;
+  if (!confirm("Yakin hapus?")) return;
   try {
     await axios.delete(`/api/tempat-pkl/${id}`);
     load();
-    notif.showMessage("Field deleted successfully");
+    notif.showMessage("Tempat PKL berhasil dihapus");
   } catch (e) {
-    notif.showMessage("Failed to delete", "error");
+    notif.showMessage("Gagal menghapus", "error");
   }
 }
 </script>

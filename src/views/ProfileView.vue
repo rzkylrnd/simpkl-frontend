@@ -3,14 +3,14 @@
     <div :class="['rounded-xl shadow p-6', darkMode ? 'bg-gray-800' : 'light-card']">
       <h3 class="text-lg font-bold mb-4">Profile</h3>
       <div class="space-y-2 mb-4">
-        <p><span class="font-semibold">Name:</span> {{ authStore.user?.nama }}</p>
+        <p><span class="font-semibold">Nama:</span> {{ authStore.user?.nama }}</p>
         <p><span class="font-semibold">Email:</span> {{ authStore.user?.email }}</p>
         <p><span class="font-semibold">Role:</span> {{ authStore.user?.role }}</p>
       </div>
 
       <div class="flex gap-2 mb-4">
         <button @click="showEdit = !showEdit" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Edit Profile</button>
-        <button @click="showPassword = !showPassword" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Change Password</button>
+        <button @click="showPassword = !showPassword" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Ganti Password</button>
       </div>
 
       <div
@@ -26,7 +26,7 @@
           <h3 class="text-lg font-bold mb-4">Edit Profile</h3>
           <form @submit.prevent="updateProfile">
             <div class="mb-3">
-              <label class="block text-sm mb-1">Name</label>
+              <label class="block text-sm mb-1">Nama</label>
               <input v-model="editForm.nama" type="text" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
             </div>
             <div class="mb-3">
@@ -34,15 +34,15 @@
               <input v-model="editForm.email" type="email" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
             </div>
             <div v-if="authStore.isSiswa" class="mb-3">
-              <label class="block text-sm mb-1">School</label>
+              <label class="block text-sm mb-1">Sekolah</label>
               <select v-model="editForm.id_sekolah" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-                <option value="">-- Select --</option>
+                <option value="">-- Pilih --</option>
                 <option v-for="s in sekolah" :key="s.id_sekolah" :value="s.id_sekolah">{{ s.nama_sekolah }}</option>
               </select>
             </div>
             <div class="flex gap-2 justify-end">
-              <button type="button" @click="showEdit = false" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']">Cancel</button>
-              <button type="submit" :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700', darkMode ? '' : 'shadow-sm']">Save</button>
+              <button type="button" @click="showEdit = false" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']">Batal</button>
+              <button type="submit" :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700', darkMode ? '' : 'shadow-sm']">Simpan</button>
             </div>
           </form>
         </div>
@@ -57,19 +57,19 @@
             darkMode ? 'bg-gray-800' : 'light-modal',
           ]"
         >
-          <h3 class="text-lg font-bold mb-4">Change Password</h3>
+          <h3 class="text-lg font-bold mb-4">Ganti Password</h3>
           <form @submit.prevent="changePassword">
             <div class="mb-3">
-              <label class="block text-sm mb-1">New Password</label>
+              <label class="block text-sm mb-1">Password Baru</label>
               <input v-model="passwordForm.password" type="password" required minlength="6" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
             </div>
             <div class="mb-3">
-              <label class="block text-sm mb-1">Confirm Password</label>
+              <label class="block text-sm mb-1">Konfirmasi Password</label>
               <input v-model="passwordForm.password_confirmation" type="password" required minlength="6" :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
             </div>
             <div class="flex gap-2 justify-end">
-              <button type="button" @click="showPassword = false" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']">Cancel</button>
-              <button type="submit" :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700', darkMode ? '' : 'shadow-sm']">Save</button>
+              <button type="button" @click="showPassword = false" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']">Batal</button>
+              <button type="submit" :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700', darkMode ? '' : 'shadow-sm']">Simpan</button>
             </div>
           </form>
         </div>
@@ -128,7 +128,7 @@ async function updateProfile() {
 
 async function changePassword() {
   if (passwordForm.value.password !== passwordForm.value.password_confirmation) {
-    alert('Password confirmation does not match')
+    alert('Konfirmasi password tidak cocok')
     return
   }
   await axios.put(`/api/users/${authStore.user.id}`, {
@@ -139,6 +139,6 @@ async function changePassword() {
   })
   passwordForm.value = { password: '', password_confirmation: '' }
   showPassword.value = false
-  alert('Password changed successfully')
+  alert('Password berhasil diubah')
 }
 </script>
