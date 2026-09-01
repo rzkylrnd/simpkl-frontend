@@ -1,17 +1,17 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold">Data Users</h3>
-      <button @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Tambah</button>
+      <h3 class="text-lg font-semibold">Users Data</h3>
+      <button @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Add</button>
     </div>
     <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
       <table class="w-full text-sm">
         <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
           <tr>
-            <th class="p-3 text-left">Nama</th>
+            <th class="p-3 text-left">Name</th>
             <th class="p-3 text-left">Email</th>
             <th class="p-3 text-left">Role</th>
-            <th class="p-3 text-center">Aksi</th>
+            <th class="p-3 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -27,7 +27,7 @@
             </td>
             <td class="p-3 text-center whitespace-nowrap">
               <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-              <button @click="hapus(item.id)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+              <button @click="hapus(item.id)" class="text-red-600 hover:text-red-800" title="Delete"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
@@ -40,7 +40,7 @@
             <div :class="'w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm ' + (form.id ? 'bg-blue-500' : 'bg-green-500')">
               <i :class="form.id ? 'fas fa-pen' : 'fas fa-plus'"></i>
             </div>
-            <h3 class="text-lg font-bold">{{ form.id ? 'Edit' : 'Tambah' }} User</h3>
+            <h3 class="text-lg font-bold">{{ form.id ? 'Edit' : 'Add' }} User</h3>
           </div>
           <button @click="batal" :class="'w-8 h-8 rounded-lg flex items-center justify-center hover:' + (darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-500')">
             <i class="fas fa-times"></i>
@@ -48,18 +48,18 @@
         </div>
         <form @submit.prevent="simpan" class="p-6">
           <div class="mb-4">
-            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Nama</label>
-            <input v-model="form.nama" type="text" required placeholder="Masukkan nama"
+            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Name</label>
+            <input v-model="form.nama" type="text" required placeholder="Enter name"
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
           </div>
           <div class="mb-4">
             <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Email</label>
-            <input v-model="form.email" type="text" required placeholder="Masukkan email"
+            <input v-model="form.email" type="text" required placeholder="Enter email"
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
           </div>
           <div class="mb-4">
-            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Password <span :class="darkMode ? 'text-gray-500' : 'text-gray-400'">(isi jika ganti)</span></label>
-            <input v-model="form.password" type="password" placeholder="Minimal 6 karakter"
+            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Password <span :class="darkMode ? 'text-gray-500' : 'text-gray-400'">(fill only if changing)</span></label>
+            <input v-model="form.password" type="password" placeholder="Min 8 characters"
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
           </div>
           <div class="mb-4">
@@ -67,82 +67,82 @@
             <select v-model="form.role" required
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
               <option value="admin">Admin</option>
-              <option value="siswa">Siswa</option>
-              <option value="guru_pembimbing">Guru Pembimbing</option>
-              <option value="pembimbing_industri">Pembimbing Industri</option>
+              <option value="siswa">Student</option>
+              <option value="guru_pembimbing">Supervising Teacher</option>
+              <option value="pembimbing_industri">Industry Supervisor</option>
             </select>
           </div>
 
           <template v-if="form.role === 'siswa'">
             <div :class="['mb-4 pt-4 border-t', darkMode ? 'border-gray-700' : 'border-gray-200']">
-              <p :class="['text-xs font-semibold uppercase tracking-wider mb-3', darkMode ? 'text-gray-400' : 'text-gray-500']">Data Siswa</p>
+              <p :class="['text-xs font-semibold uppercase tracking-wider mb-3', darkMode ? 'text-gray-400' : 'text-gray-500']">Student Data</p>
               <div class="mb-4">
-                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Sekolah</label>
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">School</label>
                 <select v-model="form.id_sekolah" required
                   :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-                  <option value="">-- Pilih Sekolah --</option>
+                  <option value="">-- Select School --</option>
                   <option v-for="s in sekolah" :key="s.id_sekolah" :value="s.id_sekolah">{{ s.nama_sekolah }}</option>
                 </select>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">NIS</label>
-                  <input v-model="form.nis" type="text" required placeholder="Nomor induk siswa"
+                  <input v-model="form.nis" type="text" required placeholder="Student ID number"
                     :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
                 </div>
                 <div>
-                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Kelas</label>
-                  <input v-model="form.kelas" type="text" required placeholder="Contoh: XII RPL 1"
+                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Class</label>
+                  <input v-model="form.kelas" type="text" required placeholder="e.g. XII RPL 1"
                     :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
                 </div>
               </div>
               <div class="mb-4">
-                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Jurusan</label>
-                <input v-model="form.jurusan" type="text" required placeholder="Contoh: Rekayasa Perangkat Lunak"
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Major</label>
+                <input v-model="form.jurusan" type="text" required placeholder="e.g. Software Engineering"
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
           </div>
           <div class="mb-4">
             <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Email</label>
-            <input v-model="form.email" type="text" required placeholder="Masukkan email"
+            <input v-model="form.email" type="text" required placeholder="Enter email"
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
           </div>
           <div class="mb-4">
-            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Password <span :class="darkMode ? 'text-gray-500' : 'text-gray-400'">(isi jika ganti)</span></label>
-            <input v-model="form.password" type="password" placeholder="Minimal 6 karakter"
+            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Password <span :class="darkMode ? 'text-gray-500' : 'text-gray-400'">(fill only if changing)</span></label>
+            <input v-model="form.password" type="password" placeholder="Min 8 characters"
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
           </div>
           <div class="mb-4">
-            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Bidang</label>
+            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Field</label>
             <select v-model="form.id_tempat_pkl" required
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-                  <option value="">-- Pilih Bidang --</option>
+                  <option value="">-- Select Field --</option>
                   <option v-for="t in tempatPkl" :key="t.id_tempat_pkl" :value="t.id_tempat_pkl">{{ t.nama_perusahaan }}</option>
                 </select>
               </div>
               <div class="mb-4">
-                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Pembimbing Industri</label>
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Industry Supervisor</label>
                 <select v-model="form.id_pembimbing_industri" required
                   :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-                  <option value="">-- Pilih Pembimbing Industri --</option>
+                  <option value="">-- Select Industry Supervisor --</option>
                   <option v-for="p in pembimbingIndustri" :key="p.id" :value="p.id">{{ p.nama }}</option>
                 </select>
               </div>
               <div class="mb-4">
-                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Guru Pembimbing</label>
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Supervising Teacher</label>
                 <select v-model="form.id_guru_pembimbing" required
                   :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-                  <option value="">-- Pilih Guru Pembimbing --</option>
+                  <option value="">-- Select Supervising Teacher --</option>
                   <option v-for="g in guruPembimbing" :key="g.id" :value="g.id">{{ g.nama }}</option>
                 </select>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Tanggal Mulai</label>
+                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Start Date</label>
                   <input v-model="form.tanggal_mulai" type="date"
                     :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
                 </div>
                 <div>
-                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Tanggal Selesai</label>
+                  <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">End Date</label>
                   <input v-model="form.tanggal_selesai" type="date"
                     :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
                 </div>
@@ -152,11 +152,11 @@
 
           <div class="flex gap-3 justify-end pt-4 border-t" :class="darkMode ? 'border-gray-700' : 'border-gray-200'">
             <button type="button" @click="batal"
-              :class="['px-5 py-2.5 rounded-lg text-sm font-medium transition', darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700']">Batal</button>
+              :class="['px-5 py-2.5 rounded-lg text-sm font-medium transition', darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700']">Cancel</button>
             <button type="submit" :disabled="loading"
               class="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition flex items-center gap-2">
               <i v-if="loading" class="fas fa-spinner fa-spin"></i>
-              {{ loading ? "Menyimpan..." : "Simpan" }}
+              {{ loading ? "Saving..." : "Save" }}
             </button>
           </div>
         </form>
@@ -219,7 +219,7 @@ async function load() {
     const res = await axios.get('/api/users')
     data.value = res.data.data
   } catch (e) {
-    notif.showMessage('Gagal memuat data', 'error')
+    notif.showMessage('Failed to load data', 'error')
   }
 }
 
@@ -248,10 +248,10 @@ async function simpan() {
   loading.value = true
   try {
     if (form.value.password) {
-      if (form.value.password.length < 8) { notif.showMessage('Password minimal 8 karakter', 'error'); loading.value = false; return }
-      if (!/[A-Z]/.test(form.value.password)) { notif.showMessage('Password harus mengandung huruf besar', 'error'); loading.value = false; return }
-      if (!/[0-9]/.test(form.value.password)) { notif.showMessage('Password harus mengandung angka', 'error'); loading.value = false; return }
-      if (!/[^a-zA-Z0-9]/.test(form.value.password)) { notif.showMessage('Password harus mengandung simbol', 'error'); loading.value = false; return }
+      if (form.value.password.length < 8) { notif.showMessage('Password must be at least 8 characters', 'error'); loading.value = false; return }
+      if (!/[A-Z]/.test(form.value.password)) { notif.showMessage('Password must contain an uppercase letter', 'error'); loading.value = false; return }
+      if (!/[0-9]/.test(form.value.password)) { notif.showMessage('Password must contain a number', 'error'); loading.value = false; return }
+      if (!/[^a-zA-Z0-9]/.test(form.value.password)) { notif.showMessage('Password must contain a symbol', 'error'); loading.value = false; return }
     }
     const payload = { ...form.value }
     if (!payload.password) delete payload.password
@@ -262,22 +262,22 @@ async function simpan() {
     }
     batal()
     load()
-    notif.showMessage('User berhasil disimpan')
+    notif.showMessage('User saved successfully')
   } catch (e) {
-    notif.showMessage(e.response?.data?.message || 'Gagal menyimpan', 'error')
+    notif.showMessage(e.response?.data?.message || 'Failed to save', 'error')
   } finally {
     loading.value = false
   }
 }
 
 async function hapus(id) {
-  if (!confirm('Yakin hapus?')) return
+  if (!confirm('Are you sure you want to delete?')) return
   try {
     await axios.delete(`/api/users/${id}`)
     load()
-    notif.showMessage('User berhasil dihapus')
+    notif.showMessage('User deleted successfully')
   } catch (e) {
-    notif.showMessage('Gagal menghapus', 'error')
+    notif.showMessage('Failed to delete', 'error')
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold">Data Presensi</h3>
+      <h3 class="text-lg font-semibold">Attendance Data</h3>
       <button
         v-if="authStore.isSiswa"
         @click="openForm"
@@ -10,7 +10,7 @@
           darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary',
         ]"
       >
-        Lakukan Presensi
+        Log Attendance
       </button>
     </div>
     <div
@@ -22,12 +22,12 @@
       <table class="w-full text-sm">
         <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
           <tr>
-            <th class="p-3 text-left">Siswa</th>
-            <th class="p-3 text-left">Tanggal</th>
-            <th class="p-3 text-left">Datang</th>
-            <th class="p-3 text-left">Pulang</th>
+            <th class="p-3 text-left">Student</th>
+            <th class="p-3 text-left">Date</th>
+            <th class="p-3 text-left">Check In</th>
+            <th class="p-3 text-left">Check Out</th>
             <th class="p-3 text-left">Status</th>
-            <th class="p-3 text-center">Aksi</th>
+            <th class="p-3 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -68,12 +68,12 @@
               <span
                 v-else-if="item.status_validasi === 'tidak_valid'"
                 class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold"
-                >Tidak Valid</span
+                >Not Valid</span
               >
               <span
                 v-else
                 class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs"
-                >Menunggu</span
+                >Pending</span
               >
             </td>
             <td class="p-3 text-center whitespace-nowrap">
@@ -93,14 +93,14 @@
                   @click="validasi(item.id_presensi, 'tidak_valid')"
                   class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
                 >
-                  Tidak Valid
+                  Not Valid
                 </button>
               </template>
               <template v-else-if="authStore.isSiswa || authStore.isAdmin">
                 <button
                   @click="showDetail(item)"
                   class="text-blue-600 hover:text-blue-800"
-                  title="Lihat Detail"
+                  title="View Detail"
                 >
                   <i class="fas fa-eye"></i>
                 </button>
@@ -134,14 +134,14 @@
             form.id && !authStore.isSiswa
               ? "Edit"
               : presensiType
-                ? "Presensi " + (presensiType === "masuk" ? "Masuk" : "Pulang")
-                : "Tambah"
+                ? "Attendance " + (presensiType === "masuk" ? "In" : "Out")
+                : "Add"
           }}
-          Presensi
+          Attendance
         </h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
-            <label class="block text-sm mb-1">Siswa</label>
+            <label class="block text-sm mb-1">Student</label>
             <p
               :class="[
                 'text-sm font-medium py-2',
@@ -154,7 +154,7 @@
           </div>
           <input v-model="form.id_siswa" type="hidden" />
           <div class="mb-3">
-            <label class="block text-sm mb-1">Tanggal</label>
+            <label class="block text-sm mb-1">Date</label>
             <input
               v-model="form.tanggal"
               type="date"
@@ -175,32 +175,32 @@
             v-if="authStore.isSiswa && presensiType === 'masuk' && !form.id"
             class="mb-3"
           >
-            <label class="block text-sm mb-1">Waktu Datang</label>
+            <label class="block text-sm mb-1">Arrival Time</label>
             <p
               :class="[
                 'text-sm font-medium py-2',
                 darkMode ? 'text-gray-300' : 'text-gray-700',
               ]"
             >
-              <i class="fas fa-clock mr-1"></i>Akan terisi otomatis saat simpan
+              <i class="fas fa-clock mr-1"></i>Will be filled automatically when saving
             </p>
           </div>
           <div
             v-else-if="authStore.isSiswa && presensiType === 'pulang'"
             class="mb-3"
           >
-            <label class="block text-sm mb-1">Waktu Pulang</label>
+            <label class="block text-sm mb-1">Departure Time</label>
             <p
               :class="[
                 'text-sm font-medium py-2',
                 darkMode ? 'text-gray-300' : 'text-gray-700',
               ]"
             >
-              <i class="fas fa-clock mr-1"></i>Akan terisi otomatis saat simpan
+              <i class="fas fa-clock mr-1"></i>Will be filled automatically when saving
             </p>
           </div>
           <div v-else class="mb-3">
-            <label class="block text-sm mb-1">Waktu Datang</label>
+            <label class="block text-sm mb-1">Arrival Time</label>
             <input
               :value="form.waktu_datang"
               type="text"
@@ -219,7 +219,7 @@
             v-if="!authStore.isSiswa || (authStore.isSiswa && form.id)"
             class="mb-3"
           >
-            <label class="block text-sm mb-1">Waktu Pulang</label>
+            <label class="block text-sm mb-1">Departure Time</label>
             <input
               :value="form.waktu_pulang"
               type="text"
@@ -245,7 +245,7 @@
                   : 'light-btn-ghost text-gray-700',
               ]"
             >
-              Batal
+              Cancel
             </button>
             <button
               type="submit"
@@ -256,7 +256,7 @@
               ]"
             >
               <i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i
-              >{{ loading ? "Menyimpan..." : "Simpan" }}
+              >{{ loading ? "Saving..." : "Save" }}
             </button>
           </div>
         </form>
@@ -273,14 +273,14 @@
           darkMode ? 'bg-gray-800' : 'light-modal',
         ]"
       >
-        <h3 class="text-lg font-bold mb-4">Detail Presensi</h3>
+        <h3 class="text-lg font-bold mb-4">Attendance Detail</h3>
         <div class="space-y-2 text-sm">
           <p>
-            <span class="font-semibold">Tanggal:</span>
+            <span class="font-semibold">Date:</span>
             {{ detailItem?.tanggal }}
           </p>
           <p>
-            <span class="font-semibold">Waktu Datang:</span>
+            <span class="font-semibold">Arrival Time:</span>
             {{
               detailItem?.waktu_datang
                 ? detailItem.waktu_datang.slice(0, 5) + " WIB"
@@ -288,7 +288,7 @@
             }}
           </p>
           <p>
-            <span class="font-semibold">Waktu Pulang:</span>
+            <span class="font-semibold">Departure Time:</span>
             {{
               detailItem?.waktu_pulang
                 ? detailItem.waktu_pulang.slice(0, 5) + " WIB"
@@ -305,9 +305,9 @@
             <span
               v-else-if="detailItem?.status_validasi === 'tidak_valid'"
               class="text-red-600 font-bold"
-              >Tidak Valid</span
+              >Not Valid</span
             >
-            <span v-else class="text-yellow-600">Menunggu</span>
+            <span v-else class="text-yellow-600">Pending</span>
           </p>
         </div>
         <div class="flex justify-end mt-4">
@@ -320,7 +320,7 @@
                 : 'light-btn-ghost text-gray-700',
             ]"
           >
-            Tutup
+            Close
           </button>
         </div>
       </div>
@@ -364,7 +364,7 @@ async function load() {
     const res = await axios.get("/api/presensi");
     data.value = res.data.data;
   } catch (e) {
-    notif.showMessage("Gagal memuat data", "error");
+    notif.showMessage("Failed to load data", "error");
   }
 }
 
@@ -389,7 +389,7 @@ async function openForm() {
   );
   if (todayRecord && todayRecord.waktu_datang && todayRecord.waktu_pulang) {
     notif.showMessage(
-      "Anda sudah melakukan presensi masuk dan pulang hari ini",
+      "You have already logged attendance in and out today",
       "warning",
     );
     return;
@@ -398,7 +398,7 @@ async function openForm() {
     const jamServer = await getServerTime();
     if (!isPulangAllowed(jamServer)) {
       notif.showMessage(
-        "Belum bisa presensi pulang. Minimal pukul 15:30 WIB.",
+        "You cannot log check out yet. Minimum 15:30 WIB.",
         "warning",
       );
       return;
@@ -480,7 +480,7 @@ async function simpan() {
         const jamServer = await getServerTime();
         if (!isPulangAllowed(jamServer)) {
           notif.showMessage(
-            "Belum bisa presensi pulang. Minimal pukul 15:30 WIB.",
+            "You cannot log check out yet. Minimum 15:30 WIB.",
             "warning",
           );
           return;
@@ -501,13 +501,13 @@ async function simpan() {
     }
     batal();
     load();
-    notif.showMessage("Presensi berhasil disimpan");
+    notif.showMessage("Attendance saved successfully");
   } catch (e) {
     const msg = e.response?.data?.message || "";
     if (msg.includes("Duplicate entry")) {
-      notif.showMessage("Anda sudah melakukan presensi hari ini", "warning");
+      notif.showMessage("You have already logged attendance today", "warning");
     } else {
-      notif.showMessage(msg || "Gagal menyimpan", "error");
+      notif.showMessage(msg || "Failed to save", "error");
     }
   } finally {
     loading.value = false;
@@ -520,20 +520,20 @@ async function validasi(id, status) {
       status_validasi: status,
     });
     load();
-    notif.showMessage("Status presensi berhasil divalidasi");
+    notif.showMessage("Attendance status validated successfully");
   } catch (e) {
-    notif.showMessage("Gagal validasi", "error");
+    notif.showMessage("Failed to validate", "error");
   }
 }
 
 async function hapus(id) {
-  if (confirm("Yakin hapus?")) {
+  if (confirm("Are you sure you want to delete?")) {
     try {
       await axios.delete(`/api/presensi/${id}`);
       load();
-      notif.showMessage("Presensi berhasil dihapus");
+      notif.showMessage("Attendance deleted successfully");
     } catch (e) {
-      notif.showMessage("Gagal menghapus", "error");
+      notif.showMessage("Failed to delete", "error");
     }
   }
 }

@@ -1,20 +1,20 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold">Data Penempatan</h3>
-      <button @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Tambah</button>
+      <h3 class="text-lg font-semibold">Placement Data</h3>
+      <button @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Add</button>
     </div>
     <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
       <table class="w-full text-sm">
         <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
           <tr>
-            <th class="p-3 text-left">Siswa</th>
-            <th class="p-3 text-left">Perusahaan</th>
-            <th class="p-3 text-left">Guru Pembimbing</th>
-            <th class="p-3 text-left">Pembimbing Industri</th>
-            <th class="p-3 text-left">Mulai</th>
-            <th class="p-3 text-left">Selesai</th>
-            <th class="p-3 text-center">Aksi</th>
+            <th class="p-3 text-left">Student</th>
+            <th class="p-3 text-left">Company</th>
+            <th class="p-3 text-left">Supervising Teacher</th>
+            <th class="p-3 text-left">Industry Supervisor</th>
+            <th class="p-3 text-left">Start</th>
+            <th class="p-3 text-left">End</th>
+            <th class="p-3 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -27,7 +27,7 @@
             <td class="p-3">{{ item.tanggal_selesai }}</td>
             <td class="p-3 text-center whitespace-nowrap">
               <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-              <button @click="hapus(item.id_penempatan)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+              <button @click="hapus(item.id_penempatan)" class="text-red-600 hover:text-red-800" title="Delete"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
@@ -36,48 +36,48 @@
 
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center">
       <div :class="['p-6 rounded-xl shadow-lg w-full max-w-md', darkMode ? 'bg-gray-800' : 'light-modal']">
-        <h3 class="text-lg font-bold mb-4">{{ form.id ? 'Edit' : 'Tambah' }} Penempatan</h3>
+        <h3 class="text-lg font-bold mb-4">{{ form.id ? 'Edit' : 'Add' }} Placement</h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
-            <label class="block text-sm mb-1">Siswa</label>
+            <label class="block text-sm mb-1">Student</label>
             <select v-if="!form.id" v-model="form.id_siswa" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-              <option value="">-- Pilih --</option>
+              <option value="">-- Select --</option>
               <option v-for="s in siswa" :key="s.id_siswa" :value="s.id_siswa">{{ s.user?.nama }}</option>
             </select>
             <input v-else :value="selectedSiswaNama" disabled :class="['w-full border px-3 py-2 rounded bg-gray-100', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-100']" />
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Penempatan Bidang PKL</label>
+            <label class="block text-sm mb-1">Field Placement</label>
             <select v-model="form.id_tempat_pkl" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-              <option value="">-- Pilih --</option>
+              <option value="">-- Select --</option>
               <option v-for="t in tempatPkl" :key="t.id_tempat_pkl" :value="t.id_tempat_pkl">{{ t.nama_perusahaan }}</option>
             </select>
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Guru Pembimbing</label>
+            <label class="block text-sm mb-1">Supervising Teacher</label>
             <select v-model="form.id_guru_pembimbing" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-              <option value="">-- Pilih Guru Pembimbing --</option>
+              <option value="">-- Select Supervising Teacher --</option>
               <option v-for="g in guru" :key="g.id" :value="g.id">{{ g.nama }}</option>
             </select>
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Pembimbing Industri</label>
+            <label class="block text-sm mb-1">Industry Supervisor</label>
             <select v-model="form.id_pembimbing_industri" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-              <option value="">-- Pilih Pembimbing Industri --</option>
+              <option value="">-- Select Industry Supervisor --</option>
               <option v-for="p in industri" :key="p.id" :value="p.id">{{ p.nama }}</option>
             </select>
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Tanggal Mulai</label>
+            <label class="block text-sm mb-1">Start Date</label>
             <input v-model="form.tanggal_mulai" type="date" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
           </div>
           <div class="mb-4">
-            <label class="block text-sm mb-1">Tanggal Selesai</label>
+            <label class="block text-sm mb-1">End Date</label>
             <input v-model="form.tanggal_selesai" type="date" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
           </div>
           <div class="flex gap-2 justify-end">
-            <button type="button" @click="batal" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']">Batal</button>
-            <button type="submit" :disabled="loading" :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50', darkMode ? '' : 'shadow-sm']"><i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? "Menyimpan..." : "Simpan" }}</button>
+            <button type="button" @click="batal" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']">Cancel</button>
+            <button type="submit" :disabled="loading" :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50', darkMode ? '' : 'shadow-sm']"><i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? "Saving..." : "Save" }}</button>
           </div>
         </form>
       </div>
@@ -116,7 +116,7 @@ async function load() {
     const res = await axios.get('/api/penempatan')
     data.value = res.data.data
   } catch (e) {
-    notif.showMessage('Gagal memuat data', 'error')
+    notif.showMessage('Failed to load data', 'error')
   }
 }
 
@@ -161,22 +161,22 @@ async function simpan() {
     }
     batal()
     load()
-    notif.showMessage('Penempatan berhasil disimpan')
+    notif.showMessage('Placement saved successfully')
   } catch (e) {
-    notif.showMessage(e.response?.data?.message || 'Gagal menyimpan', 'error')
+    notif.showMessage(e.response?.data?.message || 'Failed to save', 'error')
   } finally {
     loading.value = false
   }
 }
 
 async function hapus(id) {
-  if (!confirm('Yakin hapus?')) return
+  if (!confirm('Are you sure you want to delete?')) return
   try {
     await axios.delete(`/api/penempatan/${id}`)
     load()
-    notif.showMessage('Penempatan berhasil dihapus')
+    notif.showMessage('Placement deleted successfully')
   } catch (e) {
-    notif.showMessage('Gagal menghapus', 'error')
+    notif.showMessage('Failed to delete', 'error')
   }
 }
 </script>

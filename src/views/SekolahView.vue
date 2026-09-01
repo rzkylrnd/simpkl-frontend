@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold">Data Sekolah</h3>
+      <h3 class="text-lg font-semibold">School Data</h3>
       <button
         @click="batal(); showForm = true"
         :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']"
       >
-        Tambah
+        Add
       </button>
     </div>
     <div
@@ -18,10 +18,10 @@
       <table class="w-full text-sm">
         <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
           <tr>
-            <th class="p-3 text-left">Nama Sekolah</th>
-            <th class="p-3 text-left">Alamat</th>
-            <th class="p-3 text-left">Telp</th>
-            <th class="p-3 text-center">Aksi</th>
+            <th class="p-3 text-left">School Name</th>
+            <th class="p-3 text-left">Address</th>
+            <th class="p-3 text-left">Phone</th>
+            <th class="p-3 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -47,7 +47,7 @@
               <button
                 @click="hapus(item.id_sekolah)"
                 class="text-red-600 hover:text-red-800"
-                title="Hapus"
+                title="Delete"
               >
                 <i class="fas fa-trash-alt"></i>
               </button>
@@ -68,11 +68,11 @@
         ]"
       >
         <h3 class="text-lg font-bold mb-4">
-          {{ form.id ? "Edit" : "Tambah" }} Sekolah
+          {{ form.id ? "Edit" : "Add" }} School
         </h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
-            <label class="block text-sm mb-1">Nama Sekolah</label>
+            <label class="block text-sm mb-1">School Name</label>
             <input
               v-model="form.nama_sekolah"
               type="text"
@@ -84,7 +84,7 @@
             />
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Alamat</label>
+            <label class="block text-sm mb-1">Address</label>
             <input
               v-model="form.alamat"
               type="text"
@@ -93,7 +93,7 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block text-sm mb-1">Telp</label>
+            <label class="block text-sm mb-1">Phone</label>
             <input
               v-model="form.telp"
               type="text"
@@ -106,7 +106,7 @@
               @click="batal"
               :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']"
             >
-              Batal
+              Cancel
             </button>
             <button
               type="submit"
@@ -114,7 +114,7 @@
               :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50', darkMode ? '' : 'shadow-sm']"
             >
               <i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i
-              >{{ loading ? "Menyimpan..." : "Simpan" }}
+              >{{ loading ? "Saving..." : "Save" }}
             </button>
           </div>
         </form>
@@ -145,7 +145,7 @@ async function load() {
     const res = await axios.get("/api/sekolah");
     data.value = res.data.data;
   } catch (e) {
-    notif.showMessage("Gagal memuat data", "error");
+    notif.showMessage("Failed to load data", "error");
   }
 }
 
@@ -175,22 +175,22 @@ async function simpan() {
     }
     batal();
     load();
-    notif.showMessage("Sekolah berhasil disimpan");
+    notif.showMessage("School saved successfully");
   } catch (e) {
-    notif.showMessage(e.response?.data?.message || "Gagal menyimpan", "error");
+    notif.showMessage(e.response?.data?.message || "Failed to save", "error");
   } finally {
     loading.value = false;
   }
 }
 
 async function hapus(id) {
-  if (!confirm("Yakin hapus?")) return;
+  if (!confirm("Are you sure you want to delete?")) return;
   try {
     await axios.delete(`/api/sekolah/${id}`);
     load();
-    notif.showMessage("Sekolah berhasil dihapus");
+    notif.showMessage("School deleted successfully");
   } catch (e) {
-    notif.showMessage("Gagal menghapus", "error");
+    notif.showMessage("Failed to delete", "error");
   }
 }
 </script>
