@@ -60,7 +60,15 @@
           <input v-model="form.id_siswa" type="hidden" />
           <div class="mb-3">
             <label class="block text-sm mb-1">Tanggal</label>
-            <input v-model="form.tanggal" type="date" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
+            <div>
+              <input
+                v-model="form.tanggal"
+                type="date"
+                required
+                :readonly="authStore.isSiswa && !form.id"
+                :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input', (authStore.isSiswa && !form.id) ? 'opacity-70 cursor-not-allowed' : '']"
+              />
+            </div>
           </div>
           <div class="mb-3">
             <label class="block text-sm mb-1">Kegiatan</label>
@@ -125,7 +133,8 @@ async function load() {
 }
 
 function openForm() {
-  form.value = { id: null, id_siswa: authStore.user?.siswa?.id_siswa || '', tanggal: '', kegiatan: '' }
+  const today = new Date().toISOString().slice(0, 10);
+  form.value = { id: null, id_siswa: authStore.user?.siswa?.id_siswa || '', tanggal: today, kegiatan: '' }
   showForm.value = true
 }
 
