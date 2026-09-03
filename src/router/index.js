@@ -49,6 +49,11 @@ const routes = [
         component: () => import("../views/PresensiView.vue"),
       },
       {
+        path: "rekap-presensi",
+        name: "RekapPresensi",
+        component: () => import("../views/RekapPresensiView.vue"),
+      },
+      {
         path: "jam-presensi",
         name: "JamPresensi",
         component: () => import("../views/JamPresensiView.vue"),

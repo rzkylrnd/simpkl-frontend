@@ -53,6 +53,7 @@ const allMenu = [
   { path: '/siswa', label: 'Siswa', icon: '<i class="fas fa-user-graduate"></i>', roles: ['admin'] },
   { path: '/penempatan', label: 'Penempatan', icon: '<i class="fas fa-map-marker-alt"></i>', roles: ['admin'] },
   { path: '/presensi', label: 'Presensi', icon: '<i class="fas fa-clipboard-check"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/rekap-presensi', label: 'Rekap Presensi', icon: '<i class="fas fa-table"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
   { path: '/jam-presensi', label: 'Atur Jam', icon: '<i class="fas fa-clock"></i>', roles: ['admin'] },
   { path: '/jurnal', label: 'Jurnal', icon: '<i class="fas fa-book"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
   { path: '/laporan', label: 'Laporan', icon: '<i class="fas fa-file-alt"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },

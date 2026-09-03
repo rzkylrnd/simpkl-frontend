@@ -107,6 +107,7 @@ const pageTitle = computed(() => {
     Siswa: 'Data Siswa',
     Penempatan: 'Data Penempatan',
     Presensi: 'Data Presensi',
+    RekapPresensi: 'Rekap Presensi',
     Jurnal: 'Data Jurnal',
     Laporan: 'Data Laporan',
     Penilaian: 'Data Penilaian',
