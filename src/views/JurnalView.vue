@@ -11,6 +11,7 @@
             <th class="p-3 text-left">Siswa</th>
             <th class="p-3 text-left">Tanggal</th>
             <th class="p-3 text-left">Kegiatan</th>
+            <th class="p-3 text-left">Bukti</th>
             <th class="p-3 text-center">Status</th>
             <th class="p-3 text-center">Aksi</th>
           </tr>
@@ -20,6 +21,12 @@
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
             <td class="p-3">{{ item.tanggal }}</td>
             <td class="p-3">{{ item.kegiatan }}</td>
+            <td class="p-3">
+              <a v-if="item.file_path" :href="item.file_url" target="_blank" class="text-blue-600 hover:underline">
+                <i class="fas fa-file-pdf mr-1"></i>Lihat
+              </a>
+              <span v-else class="text-gray-400">-</span>
+            </td>
             <td class="p-3 text-center whitespace-nowrap">
               <span v-if="item.status_validasi === 'valid'" class="inline-flex items-center bg-green-100 text-green-700 px-2.5 py-1 rounded-md text-xs font-bold">Valid</span>
               <span v-else-if="item.status_validasi === 'tidak_valid'" class="inline-flex items-center bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-bold">Tidak Valid</span>
@@ -74,6 +81,13 @@
             <label class="block text-sm mb-1">Kegiatan</label>
             <textarea v-model="form.kegiatan" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']"></textarea>
           </div>
+          <div class="mb-3">
+            <label class="block text-sm mb-1">Bukti Kegiatan (PDF / Foto)</label>
+            <input type="file" @change="onFileChange" accept=".pdf,.jpg,.jpeg,.png"
+              :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
+            <p v-if="formFile" class="text-xs mt-1" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">File terpilih: {{ formFile.name }}</p>
+            <p v-if="item?.file_path && !formFile" class="text-xs mt-1" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">File saat ini ada. Upload baru untuk mengganti.</p>
+          </div>
           <div class="flex gap-2 justify-end">
             <button type="button" @click="batal" :class="['px-4 py-2 border rounded', darkMode ? 'border-gray-600 hover:bg-gray-700' : 'light-btn-ghost text-gray-700']">Batal</button>
             <button type="submit" :disabled="loading" :class="['px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50', darkMode ? '' : 'shadow-sm']"><i v-if="loading" class="fas fa-spinner fa-spin mr-1"></i>{{ loading ? "Menyimpan..." : "Simpan" }}</button>
@@ -88,6 +102,12 @@
         <div class="space-y-2 text-md">
           <p><span class="font-semibold">Tanggal:</span> {{ detailItem?.tanggal }}</p>
           <p><span class="font-semibold">Kegiatan:</span> {{ detailItem?.kegiatan }}</p>
+          <p><span class="font-semibold">Bukti:</span>
+            <a v-if="detailItem?.file_path" :href="detailItem?.file_url" target="_blank" class="text-blue-600 hover:underline ml-1">
+              <i class="fas fa-file-pdf"></i> Lihat Bukti
+            </a>
+            <span v-else class="text-gray-400 ml-1">Tidak ada</span>
+          </p>
           <p><span class="font-semibold">Status:</span>
             <span v-if="detailItem?.status_validasi === 'valid'" class="text-green-600 font-bold">Valid</span>
             <span v-else-if="detailItem?.status_validasi === 'tidak_valid'" class="text-red-600 font-bold">Tidak Valid</span>
@@ -119,7 +139,9 @@ const data = ref([])
 const showForm = ref(false)
 const showDetailModal = ref(false)
 const detailItem = ref(null)
+const item = ref(null)
 const form = ref({ id: null, id_siswa: '', tanggal: '', kegiatan: '' })
+let formFile = null
 
 onMounted(() => { load() })
 
@@ -134,6 +156,8 @@ async function load() {
 
 function openForm() {
   const today = new Date().toISOString().slice(0, 10);
+  formFile = null
+  item.value = null
   form.value = { id: null, id_siswa: authStore.user?.siswa?.id_siswa || '', tanggal: today, kegiatan: '' }
   showForm.value = true
 }
@@ -143,23 +167,38 @@ function showDetail(item) {
   showDetailModal.value = true
 }
 
-function edit(item) {
-  form.value = { id: item.id_jurnal, id_siswa: item.id_siswa, tanggal: item.tanggal, kegiatan: item.kegiatan }
+function edit(dataItem) {
+  formFile = null
+  item.value = dataItem
+  form.value = { id: dataItem.id_jurnal, id_siswa: dataItem.id_siswa, tanggal: dataItem.tanggal, kegiatan: dataItem.kegiatan }
   showForm.value = true
 }
 
 function batal() {
   showForm.value = false
+  formFile = null
+  item.value = null
   form.value = { id: null, id_siswa: '', tanggal: '', kegiatan: '' }
+}
+
+function onFileChange(e) {
+  const file = e.target.files[0]
+  if (file) formFile = file
 }
 
 async function simpan() {
   if (loading.value) return
   loading.value = true
   try {
-    const payload = { ...form.value }
+    const payload = new FormData()
+    payload.append('id_siswa', form.value.id_siswa)
+    payload.append('tanggal', form.value.tanggal)
+    payload.append('kegiatan', form.value.kegiatan)
+    if (formFile) payload.append('file_upload', formFile)
+
     if (form.value.id) {
-      await axios.put(`/api/jurnal/${form.value.id}`, payload)
+      payload.append('_method', 'PUT')
+      await axios.post(`/api/jurnal/${form.value.id}`, payload)
     } else {
       await axios.post('/api/jurnal', payload)
     }
