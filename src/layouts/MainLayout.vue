@@ -110,6 +110,7 @@ const pageTitle = computed(() => {
     Jurnal: 'Data Jurnal',
     Laporan: 'Data Laporan',
     Penilaian: 'Data Penilaian',
+    Izin: 'Pengajuan Izin / Sakit',
     Profile: 'Profile',
   }
   return titles[route.name] || 'SIMPKL'

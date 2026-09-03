@@ -57,6 +57,7 @@ const allMenu = [
   { path: '/jurnal', label: 'Jurnal', icon: '<i class="fas fa-book"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
   { path: '/laporan', label: 'Laporan', icon: '<i class="fas fa-file-alt"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
   { path: '/penilaian', label: 'Penilaian', icon: '<i class="fas fa-star"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
+  { path: '/izin', label: 'Izin / Sakit', icon: '<i class="fas fa-file-medical"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
   { path: '/profile', label: 'Profile', icon: '<i class="fas fa-user"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
 ]
 
