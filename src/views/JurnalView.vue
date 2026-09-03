@@ -23,7 +23,7 @@
             <td class="p-3">{{ item.kegiatan }}</td>
             <td class="p-3">
               <a v-if="item.file_path" :href="item.file_url" target="_blank" class="text-blue-600 hover:underline">
-                <i class="fas fa-file-pdf mr-1"></i>Lihat
+                <i class="fas fa-image mr-1"></i>Lihat
               </a>
               <span v-else class="text-gray-400">-</span>
             </td>
@@ -82,8 +82,8 @@
             <textarea v-model="form.kegiatan" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']"></textarea>
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Bukti Kegiatan (PDF / Foto)</label>
-            <input type="file" @change="onFileChange" accept=".pdf,.jpg,.jpeg,.png"
+            <label class="block text-sm mb-1">Bukti Kegiatan (Foto)</label>
+            <input type="file" @change="onFileChange" accept=".jpg,.jpeg,.png"
               :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
             <p v-if="formFile" class="text-xs mt-1" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">File terpilih: {{ formFile.name }}</p>
             <p v-if="item?.file_path && !formFile" class="text-xs mt-1" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">File saat ini ada. Upload baru untuk mengganti.</p>
@@ -104,7 +104,7 @@
           <p><span class="font-semibold">Kegiatan:</span> {{ detailItem?.kegiatan }}</p>
           <p><span class="font-semibold">Bukti:</span>
             <a v-if="detailItem?.file_path" :href="detailItem?.file_url" target="_blank" class="text-blue-600 hover:underline ml-1">
-              <i class="fas fa-file-pdf"></i> Lihat Bukti
+              <i class="fas fa-image"></i> Lihat Bukti
             </a>
             <span v-else class="text-gray-400 ml-1">Tidak ada</span>
           </p>
