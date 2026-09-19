@@ -105,6 +105,7 @@ const pageTitle = computed(() => {
     Sekolah: 'Data Sekolah',
     TempatPkl: 'Data Tempat PKL',
     Siswa: 'Data Siswa',
+    SiswaBinaan: 'Data Siswa Binaan',
     Penempatan: 'Data Penempatan',
     Presensi: 'Data Presensi',
     RekapPresensi: 'Rekap Presensi',

@@ -51,6 +51,7 @@ const allMenu = [
   { path: '/sekolah', label: 'Sekolah', icon: '<i class="fas fa-school"></i>', roles: ['admin'] },
   { path: '/tempat-pkl', label: 'Bidang', icon: '<i class="fas fa-building"></i>', roles: ['admin'] },
   { path: '/siswa', label: 'Siswa', icon: '<i class="fas fa-user-graduate"></i>', roles: ['admin'] },
+  { path: '/siswa-binaan', label: 'Siswa Binaan', icon: '<i class="fas fa-user-friends"></i>', roles: ['guru_pembimbing', 'pembimbing_industri'] },
   { path: '/penempatan', label: 'Penempatan', icon: '<i class="fas fa-map-marker-alt"></i>', roles: ['admin'] },
   { path: '/presensi', label: 'Presensi', icon: '<i class="fas fa-clipboard-check"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },
   { path: '/rekap-presensi', label: 'Rekap Presensi', icon: '<i class="fas fa-table"></i>', roles: ['admin', 'siswa', 'guru_pembimbing', 'pembimbing_industri'] },

@@ -39,6 +39,11 @@ const routes = [
         component: () => import("../views/SiswaView.vue"),
       },
       {
+        path: "siswa-binaan",
+        name: "SiswaBinaan",
+        component: () => import("../views/SiswaBinaanView.vue"),
+      },
+      {
         path: "penempatan",
         name: "Penempatan",
         component: () => import("../views/PenempatanView.vue"),
