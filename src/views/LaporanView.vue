@@ -2,7 +2,7 @@
   <div>
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Data Laporan Akhir</h3>
-      <button v-if="authStore.isSiswa" @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Tambah</button>
+      <button v-if="authStore.isSiswa && !hasLaporan" @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Tambah</button>
     </div>
     <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
       <table class="w-full text-sm">
@@ -36,13 +36,12 @@
             <td class="p-3 text-center whitespace-nowrap">
               <button @click="detail(item)" class="text-gray-600 hover:text-gray-800 mr-2" title="Detail"><i class="fas fa-eye"></i></button>
               <button @click="cetak(item)" class="text-green-600 hover:text-green-800 mr-2" title="Cetak"><i class="fas fa-print"></i></button>
-              <template v-if="authStore.isGuruPembimbing && item.status_validasi === 'menunggu'">
+              <template v-if="authStore.isPembimbingSekolah && item.status_validasi === 'menunggu'">
                 <button @click="validasi(item.id_laporan, 'valid')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 mr-1">Valid</button>
                 <button @click="validasi(item.id_laporan, 'tidak_valid')" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Tidak Valid</button>
               </template>
-              <template v-if="authStore.isSiswa && item.siswa?.id_siswa === authStore.user?.siswa?.id_siswa">
-                <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-                <button @click="hapus(item.id_laporan)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+              <template v-if="authStore.isSiswa && item.siswa?.id_siswa === authStore.user?.siswa?.id_siswa && item.status_validasi === 'menunggu'">
+                <button @click="edit(item)" class="text-blue-600 hover:text-blue-800" title="Edit"><i class="fas fa-edit"></i></button>
               </template>
             </td>
           </tr>
@@ -185,6 +184,10 @@ const fileToUpload = ref(null)
 const jenisLampiran = ref('file')
 const form = ref({ id: null, id_siswa: '', judul_laporan: '', file_path: '', catatan: '' })
 
+const hasLaporan = computed(() =>
+  authStore.isSiswa ? data.value.some(item => item.id_siswa === authStore.user?.siswa?.id_siswa) : false
+)
+
 onMounted(() => {
   load()
   if (!authStore.isSiswa) loadSiswa()
@@ -286,17 +289,6 @@ async function validasi(id, status) {
     notif.showMessage('Status laporan berhasil divalidasi')
   } catch (e) {
     notif.showMessage('Gagal validasi', 'error')
-  }
-}
-
-async function hapus(id) {
-  if (!confirm('Yakin hapus?')) return
-  try {
-    await axios.delete(`/api/laporan/${id}`)
-    load()
-    notif.showMessage('Laporan berhasil dihapus')
-  } catch (e) {
-    notif.showMessage('Gagal menghapus', 'error')
   }
 }
 </script>

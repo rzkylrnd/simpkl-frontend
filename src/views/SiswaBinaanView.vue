@@ -56,7 +56,7 @@
           <div><span class="font-semibold">Tempat PKL:</span> {{ detailItem?.penempatan?.tempat_pkl?.nama_perusahaan || '-' }}</div>
           <div><span class="font-semibold">Alamat Tempat PKL:</span> {{ detailItem?.penempatan?.tempat_pkl?.alamat || '-' }}</div>
           <div><span class="font-semibold">Pembimbing Industri:</span> {{ detailItem?.penempatan?.pembimbing_industri?.nama || '-' }}</div>
-          <div><span class="font-semibold">Guru Pembimbing:</span> {{ detailItem?.penempatan?.guru_pembimbing?.nama || '-' }}</div>
+          <div><span class="font-semibold">Pembimbing Sekolah:</span> {{ detailItem?.penempatan?.pembimbing_sekolah?.nama || '-' }}</div>
           <div><span class="font-semibold">Periode PKL:</span> {{ detailItem?.penempatan ? (detailItem.penempatan.tanggal_mulai + ' s/d ' + detailItem.penempatan.tanggal_selesai) : '-' }}</div>
         </div>
       </div>

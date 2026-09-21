@@ -47,7 +47,7 @@ const roleLabel = computed(() => {
   const labels = {
     admin: 'Administrator',
     siswa: 'Peserta PKL',
-    guru_pembimbing: 'Guru Pembimbing',
+    pembimbing_sekolah: 'Pembimbing Sekolah',
     pembimbing_industri: 'Pembimbing Industri',
   }
   return labels[authStore.user?.role] || ''
@@ -77,7 +77,7 @@ const quickActions = computed(() => {
     { label: 'Lihat Penilaian', icon: 'fas fa-star', route: 'Penilaian', bg: 'bg-green-500' },
     { label: 'Profile Saya', icon: 'fas fa-user', route: 'Profile', bg: 'bg-gray-500' },
   ]
-  if (role === 'guru_pembimbing') return [
+  if (role === 'pembimbing_sekolah') return [
     { label: 'Penilaian Siswa', icon: 'fas fa-star', route: 'Penilaian', bg: 'bg-green-500' },
     { label: 'Laporan Akhir', icon: 'fas fa-file-alt', route: 'Laporan', bg: 'bg-purple-500' },
     { label: 'Monitoring Presensi', icon: 'fas fa-clipboard-check', route: 'Presensi', bg: 'bg-yellow-500' },

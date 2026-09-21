@@ -10,7 +10,7 @@
           <tr>
             <th class="p-3 text-left">Siswa</th>
             <th class="p-3 text-left">Perusahaan</th>
-            <th class="p-3 text-left">Guru Pembimbing</th>
+            <th class="p-3 text-left">Pembimbing Sekolah</th>
             <th class="p-3 text-left">Pembimbing Industri</th>
             <th class="p-3 text-left">Mulai</th>
             <th class="p-3 text-left">Selesai</th>
@@ -21,7 +21,7 @@
           <tr v-for="(item, i) in data" :key="item.id_penempatan" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row']">
             <td class="p-3">{{ item.siswa?.user?.nama }}</td>
             <td class="p-3">{{ item.tempat_pkl?.nama_perusahaan }}</td>
-            <td class="p-3">{{ item.guru_pembimbing?.nama }}</td>
+            <td class="p-3">{{ item.pembimbing_sekolah?.nama }}</td>
             <td class="p-3">{{ item.pembimbing_industri?.nama }}</td>
             <td class="p-3">{{ item.tanggal_mulai }}</td>
             <td class="p-3">{{ item.tanggal_selesai }}</td>
@@ -54,10 +54,10 @@
             </select>
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Guru Pembimbing</label>
-            <select v-model="form.id_guru_pembimbing" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-              <option value="">-- Pilih Guru Pembimbing --</option>
-              <option v-for="g in guru" :key="g.id" :value="g.id">{{ g.nama }}</option>
+            <label class="block text-sm mb-1">Pembimbing Sekolah</label>
+            <select v-model="form.id_pembimbing_sekolah" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
+              <option value="">-- Pilih Pembimbing Sekolah --</option>
+              <option v-for="g in pembimbingSekolah" :key="g.id" :value="g.id">{{ g.nama }}</option>
             </select>
           </div>
           <div class="mb-3">
@@ -99,10 +99,10 @@ const loading = ref(false)
 const data = ref([])
 const siswa = ref([])
 const tempatPkl = ref([])
-const guru = ref([])
+const pembimbingSekolah = ref([])
 const industri = ref([])
 const showForm = ref(false)
-const form = ref({ id: null, id_siswa: '', id_tempat_pkl: '', id_guru_pembimbing: '', id_pembimbing_industri: '', tanggal_mulai: '', tanggal_selesai: '' })
+const form = ref({ id: null, id_siswa: '', id_tempat_pkl: '', id_pembimbing_sekolah: '', id_pembimbing_industri: '', tanggal_mulai: '', tanggal_selesai: '' })
 
 const selectedSiswaNama = computed(() => {
   const s = siswa.value.find(x => x.id_siswa == form.value.id_siswa)
@@ -129,7 +129,7 @@ async function loadOptions() {
     ])
     siswa.value = s.data.data
     tempatPkl.value = t.data.data
-    guru.value = u.data.data.filter(x => x.role === 'guru_pembimbing')
+    pembimbingSekolah.value = u.data.data.filter(x => x.role === 'pembimbing_sekolah')
     industri.value = u.data.data.filter(x => x.role === 'pembimbing_industri')
   } catch (e) {}
 }
@@ -137,7 +137,7 @@ async function loadOptions() {
 function edit(item) {
   form.value = {
     id: item.id_penempatan, id_siswa: item.id_siswa, id_tempat_pkl: item.id_tempat_pkl,
-    id_guru_pembimbing: item.id_guru_pembimbing || '',
+    id_pembimbing_sekolah: item.id_pembimbing_sekolah || '',
     id_pembimbing_industri: item.id_pembimbing_industri || '',
     tanggal_mulai: item.tanggal_mulai, tanggal_selesai: item.tanggal_selesai,
   }
@@ -146,7 +146,7 @@ function edit(item) {
 
 function batal() {
   showForm.value = false
-  form.value = { id: null, id_siswa: '', id_tempat_pkl: '', id_guru_pembimbing: '', id_pembimbing_industri: '', tanggal_mulai: '', tanggal_selesai: '' }
+  form.value = { id: null, id_siswa: '', id_tempat_pkl: '', id_pembimbing_sekolah: '', id_pembimbing_industri: '', tanggal_mulai: '', tanggal_selesai: '' }
 }
 
 async function simpan() {

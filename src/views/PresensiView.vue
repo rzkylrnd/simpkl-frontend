@@ -368,6 +368,19 @@ async function load() {
   }
 }
 
+async function cekIzinAktif(tanggal) {
+  try {
+    const res = await axios.get("/api/izin");
+    return res.data.data.some(
+      (i) =>
+        i.tanggal === tanggal &&
+        (i.status_validasi === "menunggu" || i.status_validasi === "valid"),
+    );
+  } catch {
+    return false;
+  }
+}
+
 async function getServerTime() {
   try {
     const res = await axios.get("/api/server-time");
@@ -383,6 +396,14 @@ function isPulangAllowed(jam) {
 
 async function openForm() {
   const today = new Date().toISOString().slice(0, 10);
+  const sudahIzin = await cekIzinAktif(today);
+  if (sudahIzin) {
+    notif.showMessage(
+      "Anda memiliki pengajuan izin/sakit hari ini, tidak dapat presensi",
+      "warning",
+    );
+    return;
+  }
   const todayRecord = data.value.find(
     (d) =>
       d.tanggal === today && d.id_siswa === authStore.user?.siswa?.id_siswa,

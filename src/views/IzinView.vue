@@ -61,6 +61,12 @@
               <template v-else-if="authStore.isAdmin">
                 <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800" title="Lihat Detail"><i class="fas fa-eye"></i></button>
               </template>
+              <template v-else-if="authStore.isPembimbingSekolah">
+                <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+                <button v-if="item.status_validasi === 'menunggu' || item.status_validasi === 'valid'" @click="tolak(item.id_izin)" class="bg-red-500 text-white px-2.5 py-1 rounded-md text-xs hover:bg-red-600 font-semibold">
+                  {{ item.status_validasi === 'valid' ? 'Batalkan' : 'Tolak' }}
+                </button>
+              </template>
               <span v-else :class="['text-xs', darkMode ? 'text-gray-500' : 'text-gray-400']">-</span>
             </td>
           </tr>
@@ -104,8 +110,8 @@
               :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']"></textarea>
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Bukti (PDF / Foto)</label>
-            <input type="file" @change="onFileChange" accept=".pdf,.jpg,.jpeg,.png"
+            <label class="block text-sm mb-1">Bukti (PDF / Foto)<span v-if="!form.id" class="text-red-500"> *</span></label>
+            <input type="file" @change="onFileChange" accept=".pdf,.jpg,.jpeg,.png" :required="!form.id"
               :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
             <p v-if="form.file_name" class="text-xs mt-1" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">File terpilih: {{ form.file_name }}</p>
             <p v-if="item?.file_path && !form.file_name" class="text-xs mt-1" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">File saat ini ada. Upload baru untuk mengganti.</p>
@@ -231,6 +237,10 @@ function onFileChange(e) {
 
 async function simpan() {
   if (loading.value) return;
+  if (!form.value.id && !formFile) {
+    notif.showMessage("Bukti pendukung wajib diisi", "error");
+    return;
+  }
   loading.value = true;
   try {
     const payload = new FormData();
@@ -262,6 +272,17 @@ async function validasi(id, status) {
     notif.showMessage("Status pengajuan izin berhasil divalidasi");
   } catch (e) {
     notif.showMessage(e.response?.data?.message || "Gagal memvalidasi", "error");
+  }
+}
+
+async function tolak(id) {
+  if (!confirm("Yakin menolak/membatalkan pengajuan izin ini?")) return;
+  try {
+    await axios.put(`/api/izin/${id}/tolak`);
+    load();
+    notif.showMessage("Pengajuan izin ditolak/dibatalkan");
+  } catch (e) {
+    notif.showMessage(e.response?.data?.message || "Gagal", "error");
   }
 }
 

@@ -82,8 +82,8 @@
             <textarea v-model="form.kegiatan" required :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']"></textarea>
           </div>
           <div class="mb-3">
-            <label class="block text-sm mb-1">Bukti Kegiatan (Foto)</label>
-            <input type="file" @change="onFileChange" accept=".jpg,.jpeg,.png"
+            <label class="block text-sm mb-1">Bukti Kegiatan (Foto)<span v-if="!form.id" class="text-red-500"> *</span></label>
+            <input type="file" @change="onFileChange" accept=".jpg,.jpeg,.png" :required="!form.id"
               :class="['w-full border px-3 py-2 rounded', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']" />
             <p v-if="formFile" class="text-xs mt-1" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">File terpilih: {{ formFile.name }}</p>
             <p v-if="item?.file_path && !formFile" class="text-xs mt-1" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">File saat ini ada. Upload baru untuk mengganti.</p>
@@ -154,12 +154,31 @@ async function load() {
   }
 }
 
-function openForm() {
-  const today = new Date().toISOString().slice(0, 10);
+async function openForm() {
+  const today = new Date().toISOString().slice(0, 10)
+  const sudahAdaJurnal = data.value.some(j => j.tanggal === today && j.id_siswa === authStore.user?.siswa?.id_siswa)
+  if (sudahAdaJurnal) {
+    notif.showMessage('Jurnal pada tanggal ini sudah diisi, tidak dapat mengisi lagi', 'warning')
+    return
+  }
+  const sudahPresensi = await cekPresensiHariIni(today)
+  if (!sudahPresensi) {
+    notif.showMessage('Belum bisa mengisi jurnal. Lakukan presensi terlebih dahulu.', 'error')
+    return
+  }
   formFile = null
   item.value = null
   form.value = { id: null, id_siswa: authStore.user?.siswa?.id_siswa || '', tanggal: today, kegiatan: '' }
   showForm.value = true
+}
+
+async function cekPresensiHariIni(tanggal) {
+  try {
+    const res = await axios.get('/api/presensi')
+    return res.data.data.some(p => p.tanggal === tanggal && p.waktu_datang)
+  } catch (e) {
+    return false
+  }
 }
 
 function showDetail(item) {
@@ -188,6 +207,10 @@ function onFileChange(e) {
 
 async function simpan() {
   if (loading.value) return
+  if (!form.value.id && !formFile) {
+    notif.showMessage('Bukti foto kegiatan wajib diisi', 'error')
+    return
+  }
   loading.value = true
   try {
     const payload = new FormData()

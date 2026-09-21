@@ -21,7 +21,7 @@
             <td class="p-3">
               <span :class="['px-2 py-0.5 rounded text-xs font-medium',
                 item.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                item.role === 'guru_pembimbing' ? 'bg-blue-100 text-blue-700' :
+                item.role === 'pembimbing_sekolah' ? 'bg-blue-100 text-blue-700' :
                 item.role === 'pembimbing_industri' ? 'bg-green-100 text-green-700' :
                 'bg-yellow-100 text-yellow-700']">{{ item.role }}</span>
             </td>
@@ -68,7 +68,7 @@
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
               <option value="admin">Admin</option>
               <option value="siswa">Siswa</option>
-              <option value="guru_pembimbing">Guru Pembimbing</option>
+              <option value="pembimbing_sekolah">Pembimbing Sekolah</option>
               <option value="pembimbing_industri">Pembimbing Industri</option>
             </select>
           </div>
@@ -128,11 +128,11 @@
                 </select>
               </div>
               <div class="mb-4">
-                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Guru Pembimbing</label>
-                <select v-model="form.id_guru_pembimbing" required
+                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Pembimbing Sekolah</label>
+                <select v-model="form.id_pembimbing_sekolah" required
                   :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'light-input']">
-                  <option value="">-- Pilih Guru Pembimbing --</option>
-                  <option v-for="g in guruPembimbing" :key="g.id" :value="g.id">{{ g.nama }}</option>
+                  <option value="">-- Pilih Pembimbing Sekolah --</option>
+                  <option v-for="g in pembimbingSekolah" :key="g.id" :value="g.id">{{ g.nama }}</option>
                 </select>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -180,9 +180,9 @@ const data = ref([])
 const sekolah = ref([])
 const tempatPkl = ref([])
 const pembimbingIndustri = ref([])
-const guruPembimbing = ref([])
+const pembimbingSekolah = ref([])
 const showForm = ref(false)
-const form = ref({ id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '', id_guru_pembimbing: '', tanggal_mulai: '', tanggal_selesai: '' })
+const form = ref({ id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '', id_pembimbing_sekolah: '', tanggal_mulai: '', tanggal_selesai: '' })
 
 onMounted(() => { load(); loadSekolah(); loadTempatPkl(); loadPembimbingIndustri(); loadGuruPembimbing() })
 
@@ -210,7 +210,7 @@ async function loadPembimbingIndustri() {
 async function loadGuruPembimbing() {
   try {
     const res = await axios.get('/api/users')
-    guruPembimbing.value = res.data.data.filter(u => u.role === 'guru_pembimbing')
+    pembimbingSekolah.value = res.data.data.filter(u => u.role === 'pembimbing_sekolah')
   } catch (e) {}
 }
 
@@ -231,7 +231,7 @@ function edit(item) {
     jurusan: s?.jurusan || '', alamat: s?.alamat || '', telp: s?.telp || '',
     id_tempat_pkl: s?.penempatan?.id_tempat_pkl || '',
     id_pembimbing_industri: s?.penempatan?.id_pembimbing_industri || '',
-    id_guru_pembimbing: s?.penempatan?.id_guru_pembimbing || '',
+    id_pembimbing_sekolah: s?.penempatan?.id_pembimbing_sekolah || '',
     tanggal_mulai: s?.penempatan?.tanggal_mulai || '',
     tanggal_selesai: s?.penempatan?.tanggal_selesai || '',
   }
@@ -240,7 +240,7 @@ function edit(item) {
 
 function batal() {
   showForm.value = false
-  form.value = { id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '', id_guru_pembimbing: '', tanggal_mulai: '', tanggal_selesai: '' }
+  form.value = { id: null, nama: '', email: '', password: '', role: 'siswa', id_sekolah: '', nis: '', kelas: '', jurusan: '', alamat: '', telp: '', id_tempat_pkl: '', id_pembimbing_industri: '', id_pembimbing_sekolah: '', tanggal_mulai: '', tanggal_selesai: '' }
 }
 
 async function simpan() {
