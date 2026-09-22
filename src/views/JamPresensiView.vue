@@ -14,55 +14,29 @@
       </p>
     </div>
 
-    <div
-      :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']"
-    >
-      <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
-          <tr>
-            <th class="p-3 text-left">Tanggal</th>
-            <th class="p-3 text-center">Jam Masuk</th>
-            <th class="p-3 text-center">Jam Pulang</th>
-            <th class="p-3 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(item, i) in data"
-            :key="item.id_jam"
-            :class="[
-              i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'),
-              darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row',
-            ]"
-          >
-            <td class="p-3">
-              <template v-if="item.tanggal">{{ item.tanggal }}</template>
-              <span
-                v-else
-                :class="['inline-flex px-2 py-1 rounded text-xs font-bold', darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700']"
-              >Default</span>
-            </td>
-            <td class="p-3 text-center">{{ item.jam_masuk ? item.jam_masuk.slice(0,5) : '-' }} WIB</td>
-            <td class="p-3 text-center">{{ item.jam_pulang ? item.jam_pulang.slice(0,5) : '-' }} WIB</td>
-            <td class="p-3 text-center whitespace-nowrap">
-              <button
-                @click="edit(item)"
-                class="text-blue-600 hover:text-blue-800 mr-3"
-                title="Ubah Jam"
-              ><i class="fas fa-edit"></i></button>
-              <button
-                @click="hapus(item)"
-                class="text-red-600 hover:text-red-800"
-                title="Hapus"
-              ><i class="fas fa-trash-alt"></i></button>
-            </td>
-          </tr>
-          <tr v-if="!data.length">
-            <td colspan="4" class="p-6 text-center" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">Belum ada pengaturan jam</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <DataTable :items="data" :columns="columns" id-key="id_jam" actions-header="Aksi">
+      <template #cell-tanggal="{ item }">
+        <template v-if="item.tanggal">{{ item.tanggal }}</template>
+        <span
+          v-else
+          :class="['inline-flex px-2 py-1 rounded text-xs font-bold', darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700']"
+        >Default</span>
+      </template>
+      <template #cell-jam_masuk="{ item }">{{ item.jam_masuk ? item.jam_masuk.slice(0,5) : '-' }} WIB</template>
+      <template #cell-jam_pulang="{ item }">{{ item.jam_pulang ? item.jam_pulang.slice(0,5) : '-' }} WIB</template>
+      <template #actions="{ item }">
+        <button
+          @click="edit(item)"
+          class="text-blue-600 hover:text-blue-800 mr-3"
+          title="Ubah Jam"
+        ><i class="fas fa-edit"></i></button>
+        <button
+          @click="hapus(item)"
+          class="text-red-600 hover:text-red-800"
+          title="Hapus"
+        ><i class="fas fa-trash-alt"></i></button>
+      </template>
+    </DataTable>
 
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="batal">
       <div :class="['w-full max-w-md mx-4 rounded-2xl', darkMode ? 'bg-gray-800 shadow-2xl' : 'light-modal']">
@@ -115,10 +89,17 @@ import { ref, computed, onMounted } from "vue";
 import { useThemeStore } from "../stores/theme";
 import { useNotificationStore } from "../stores/notification";
 import axios from "axios";
+import DataTable from "../components/DataTable.vue";
 
 const themeStore = useThemeStore();
 const notif = useNotificationStore();
 const darkMode = computed(() => themeStore.darkMode);
+
+const columns = [
+  { key: "tanggal", label: "Tanggal", sortable: true, searchable: true },
+  { key: "jam_masuk", label: "Jam Masuk", align: "center" },
+  { key: "jam_pulang", label: "Jam Pulang", align: "center" },
+];
 
 const data = ref([]);
 const showForm = ref(false);

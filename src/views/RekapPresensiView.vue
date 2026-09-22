@@ -1,13 +1,20 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-4 print-hide">
-      <h3 class="text-lg font-semibold">Rekap Presensi Bulanan</h3>
-      <button
-        @click="windowPrint"
-        :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']"
-      >
-        <i class="fas fa-print mr-1"></i>Cetak / Save as PDF
-      </button>
+      <h3 class="text-lg font-semibold">Lembar Presensi (Bulanan)</h3>
+      <div class="flex items-center gap-3">
+        <span
+          v-if="rows.length"
+          :class="['text-xs px-2.5 py-1 rounded-full font-medium', darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700']"
+        >{{ selectedCount }} / {{ rows.length }} siswa</span>
+        <button
+          :disabled="!selectedCount"
+          @click="windowPrint"
+          :class="['px-4 py-2 rounded-lg font-medium text-white transition-all disabled:opacity-50', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']"
+        >
+          <i class="fas fa-print mr-1"></i>Cetak / Save as PDF
+        </button>
+      </div>
     </div>
 
     <div class="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3 print-hide">
@@ -31,58 +38,31 @@
       </div>
     </div>
 
-    <!-- Print Header -->
-    <div class="print-only text-center mb-4">
-      <h2 class="text-xl font-bold">REKAP PRESENSI SISWA PKL</h2>
-      <p class="text-sm">Bulan: {{ bulanList[bulan - 1] }} {{ tahun }}</p>
-      <hr class="my-2">
-    </div>
-
-    <div v-if="!loading && data.length === 0" class="p-6 text-center rounded-xl" :class="[darkMode ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500', 'shadow']">
+    <div v-if="!loading && rows.length === 0" class="p-6 text-center rounded-xl" :class="[darkMode ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500', 'shadow print-hide']">
       Tidak ada data presensi untuk periode ini
     </div>
 
-    <div v-for="(siswa, idx) in data" :key="siswa.id_siswa"
-      :class="['rounded-xl shadow mb-4 overflow-hidden', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
-      <div :class="['flex flex-wrap gap-x-6 gap-y-1 px-4 py-3 text-sm', darkMode ? 'bg-gray-700 text-gray-200' : 'light-table-header']">
-        <span class="font-semibold">{{ idx + 1 }}. {{ siswa.nama }}</span>
-        <span>NIS: {{ siswa.nis || '-' }}</span>
-        <span v-if="siswa.kelas">Kelas: {{ siswa.kelas }}</span>
-        <span v-if="siswa.jurusan">Jurusan: {{ siswa.jurusan }}</span>
-        <span class="ml-auto font-bold">Total Hadir: {{ siswa.ringkasan.hadir }}</span>
-      </div>
-      <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
-          <tr>
-            <th class="p-3 text-left w-10">No</th>
-            <th class="p-3 text-left">Tanggal</th>
-            <th class="p-3 text-center">Jam Masuk</th>
-            <th class="p-3 text-center">Jam Pulang</th>
-            <th class="p-3 text-center">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(p, i) in siswa.presensi" :key="i"
-            :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50')]">
-            <td class="p-3">{{ i + 1 }}</td>
-            <td class="p-3">{{ p.tanggal }}</td>
-            <td class="p-3 text-center">{{ p.waktu_datang ? p.waktu_datang.slice(0,5) + ' WIB' : '-' }}</td>
-            <td class="p-3 text-center">{{ p.waktu_pulang ? p.waktu_pulang.slice(0,5) + ' WIB' : '-' }}</td>
-            <td class="p-3 text-center">
-              <span v-if="p.status_validasi === 'valid'" class="text-green-600 font-bold">Valid</span>
-              <span v-else-if="p.status_validasi === 'tidak_valid'" class="text-red-600 font-bold">Tidak Valid</span>
-              <span v-else class="text-yellow-600">Menunggu</span>
-            </td>
-          </tr>
-          <tr v-if="!siswa.presensi.length">
-            <td colspan="5" class="p-3 text-center" :class="darkMode ? 'text-gray-500' : 'text-gray-400'">Tidak ada presensi bulan ini</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Print Header -->
+    <div class="print-only text-center mb-2">
+      <h2 class="text-xl font-bold">LEMBAR PRESENSI SISWA PKL</h2>
+      <p class="text-sm my-1">Bulan: {{ bulanList[bulan - 1] }} {{ tahun }}</p>
+      <hr class="my-2">
     </div>
 
-    <div v-if="data.length" class="print-only mt-4 text-center text-xs">
-      Dicetak pada: {{ todayStr }}
+    <DataTable
+      v-if="rows.length"
+      :items="rows"
+      :columns="columns"
+      id-key="id_siswa"
+      :selectable="true"
+      :selected="selectedIds"
+      @update:selected="selectedIds = $event"
+      :paginate="false"
+      :row-class="rowClass"
+    />
+
+    <div v-if="selectedCount" class="print-only mt-2 text-center text-[10px]">
+      Sel diisi jam masuk/jam pulang. Dicetak pada: {{ todayStr }}
     </div>
   </div>
 </template>
@@ -92,6 +72,7 @@ import { ref, computed, onMounted } from "vue";
 import { useThemeStore } from "../stores/theme";
 import { useNotificationStore } from "../stores/notification";
 import axios from "axios";
+import DataTable from "../components/DataTable.vue";
 
 const themeStore = useThemeStore();
 const notif = useNotificationStore();
@@ -111,6 +92,50 @@ const tahunList = computed(() => {
 
 const data = ref([]);
 const loading = ref(false);
+const selectedIds = ref([]);
+
+const days = computed(() => new Date(tahun.value, bulan.value, 0).getDate());
+
+const rows = computed(() =>
+  data.value.map((siswa) => {
+    const byDay = {};
+    (siswa.presensi || []).forEach((p) => {
+      byDay[Number(p.tanggal.slice(8, 10))] = p;
+    });
+    return { ...siswa, byDay };
+  })
+);
+
+const columns = computed(() => {
+  const base = [
+    { key: "nama", label: "Nama", sortable: true, searchable: true },
+    { key: "kelas", label: "Kelas", sortable: true, searchable: true },
+    { key: "jurusan", label: "Jurusan", sortable: true, searchable: true },
+    { key: "sekolah", label: "Sekolah", sortable: true, searchable: true },
+  ];
+  const dayCols = [];
+  for (let d = 1; d <= days.value; d++) {
+    dayCols.push({
+      key: "d" + d,
+      label: String(d),
+      align: "center",
+      emptyText: "",
+      value: (item) => cellText(item, d),
+      cellClass: (item) => cellColor(item, d),
+    });
+  }
+  return [
+    ...base,
+    ...dayCols,
+    { key: "hadir", label: "Hadir", align: "center", sortable: true, value: (item) => item.ringkasan?.hadir ?? 0 },
+  ];
+});
+
+const selectedCount = computed(() => selectedIds.value.length);
+
+function rowClass(item) {
+  return selectedIds.value.includes(item.id_siswa) ? "" : "opacity-40 print-exclude";
+}
 
 onMounted(load);
 
@@ -119,6 +144,7 @@ async function load() {
   try {
     const res = await axios.get('/api/rekap-presensi', { params: { bulan: bulan.value, tahun: tahun.value } });
     data.value = res.data.data;
+    selectedIds.value = data.value.map((s) => s.id_siswa);
   } catch (e) {
     notif.showMessage('Gagal memuat rekap presensi', 'error');
   } finally {
@@ -126,16 +152,39 @@ async function load() {
   }
 }
 
+function cellText(item, day) {
+  const rec = item.byDay[day];
+  if (!rec) return '';
+  const masuk = rec.waktu_datang ? rec.waktu_datang.slice(0, 5) : '';
+  const pulang = rec.waktu_pulang ? rec.waktu_pulang.slice(0, 5) : '';
+  if (!masuk && !pulang) return '';
+  return masuk + '/' + pulang;
+}
+
+function cellColor(item, day) {
+  const rec = item.byDay[day];
+  return rec?.status_validasi === 'tidak_valid' ? 'text-red-500' : '';
+}
+
 function windowPrint() {
   window.print();
 }
 </script>
 
-<style scoped>
+<style>
 @media print {
-  body { background: white; }
+  @page { size: A4 landscape; margin: 8mm; }
+  body { background: white !important; }
   .print-hide { display: none !important; }
   .print-only { display: block !important; }
+  .print-exclude { display: none !important; }
+  .print-white { background: white !important; border-color: #ccc !important; box-shadow: none !important; }
+  .print-white thead { background: white !important; }
+  .print-white tbody tr { background: white !important; }
+  .print-white table { font-size: 7px !important; }
+  .print-white th, .print-white td { padding: 1px 2px !important; color: black !important; }
+  .print-white th { border: 1px solid #000 !important; }
+  .print-white td { border-bottom: 1px solid #ccc !important; }
 }
 @media screen {
   .print-only { display: none !important; }

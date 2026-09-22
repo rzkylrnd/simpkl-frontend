@@ -13,111 +13,73 @@
         Lakukan Presensi
       </button>
     </div>
-    <div
-      :class="[
-        'rounded-xl shadow overflow-x-auto',
-        darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card',
-      ]"
-    >
-      <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
-          <tr>
-            <th class="p-3 text-left">Siswa</th>
-            <th class="p-3 text-left">Tanggal</th>
-            <th class="p-3 text-left">Datang</th>
-            <th class="p-3 text-left">Pulang</th>
-            <th class="p-3 text-left">Status</th>
-            <th class="p-3 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(item, i) in data"
-            :key="item.id_presensi"
-            :class="[
-              i % 2 === 0
-                ? darkMode
-                  ? 'bg-gray-800'
-                  : 'bg-white'
-                : darkMode
-                  ? 'bg-gray-700'
-                  : 'bg-gray-50',
-              darkMode
-                ? 'hover:bg-gray-600 transition-colors'
-                : 'light-table-row',
-            ]"
+    <DataTable :items="data" :columns="columns" id-key="id_presensi" actions-header="Aksi">
+      <template #cell-waktu_datang="{ item }">
+        {{
+          item.waktu_datang ? item.waktu_datang.slice(0, 5) + " WIB" : "-"
+        }}
+      </template>
+      <template #cell-waktu_pulang="{ item }">
+        {{
+          item.waktu_pulang ? item.waktu_pulang.slice(0, 5) + " WIB" : "-"
+        }}
+      </template>
+      <template #cell-status_validasi="{ item }">
+        <span
+          v-if="item.status_validasi === 'valid'"
+          class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold"
+          >Valid</span
+        >
+        <span
+          v-else-if="item.status_validasi === 'tidak_valid'"
+          class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold"
+          >Tidak Valid</span
+        >
+        <span
+          v-else
+          class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs"
+          >Menunggu</span
+        >
+      </template>
+      <template #actions="{ item }">
+        <template
+          v-if="
+            authStore.isPembimbingIndustri &&
+            item.status_validasi === 'menunggu'
+          "
+        >
+          <button
+            @click="validasi(item.id_presensi, 'valid')"
+            class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 mr-1"
           >
-            <td class="p-3">{{ item.siswa?.user?.nama }}</td>
-            <td class="p-3">{{ item.tanggal }}</td>
-            <td class="p-3">
-              {{
-                item.waktu_datang ? item.waktu_datang.slice(0, 5) + " WIB" : "-"
-              }}
-            </td>
-            <td class="p-3">
-              {{
-                item.waktu_pulang ? item.waktu_pulang.slice(0, 5) + " WIB" : "-"
-              }}
-            </td>
-            <td class="p-3">
-              <span
-                v-if="item.status_validasi === 'valid'"
-                class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold"
-                >Valid</span
-              >
-              <span
-                v-else-if="item.status_validasi === 'tidak_valid'"
-                class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold"
-                >Tidak Valid</span
-              >
-              <span
-                v-else
-                class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs"
-                >Menunggu</span
-              >
-            </td>
-            <td class="p-3 text-center whitespace-nowrap">
-              <template
-                v-if="
-                  authStore.isPembimbingIndustri &&
-                  item.status_validasi === 'menunggu'
-                "
-              >
-                <button
-                  @click="validasi(item.id_presensi, 'valid')"
-                  class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 mr-1"
-                >
-                  Valid
-                </button>
-                <button
-                  @click="validasi(item.id_presensi, 'tidak_valid')"
-                  class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
-                >
-                  Tidak Valid
-                </button>
-              </template>
-              <template v-else-if="authStore.isSiswa || authStore.isAdmin">
-                <button
-                  @click="showDetail(item)"
-                  class="text-blue-600 hover:text-blue-800"
-                  title="Lihat Detail"
-                >
-                  <i class="fas fa-eye"></i>
-                </button>
-              </template>
-              <span
-                v-else
-                :class="[
-                  'text-xs',
-                  darkMode ? 'text-gray-500' : 'text-gray-400',
-                ]"
-                >-</span
-              >
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            Valid
+          </button>
+          <button
+            @click="validasi(item.id_presensi, 'tidak_valid')"
+            class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+          >
+            Tidak Valid
+          </button>
+        </template>
+        <template v-else-if="authStore.isSiswa || authStore.isAdmin">
+          <button
+            @click="showDetail(item)"
+            class="text-blue-600 hover:text-blue-800"
+            title="Lihat Detail"
+          >
+            <i class="fas fa-eye"></i>
+          </button>
+        </template>
+        <span
+          v-else
+          :class="[
+            'text-xs',
+            darkMode ? 'text-gray-500' : 'text-gray-400',
+          ]"
+          >-</span
+        >
+      </template>
+    </DataTable>
 
     <div
       v-if="showForm"
@@ -334,11 +296,20 @@ import { useThemeStore } from "../stores/theme";
 import { useAuthStore } from "../stores/auth";
 import { useNotificationStore } from "../stores/notification";
 import axios from "axios";
+import DataTable from "../components/DataTable.vue";
 
 const authStore = useAuthStore();
 const themeStore = useThemeStore();
 const notif = useNotificationStore();
 const darkMode = computed(() => themeStore.darkMode);
+
+const columns = [
+  { key: "siswa.user.nama", label: "Siswa", sortable: true, searchable: true },
+  { key: "tanggal", label: "Tanggal", sortable: true, searchable: true },
+  { key: "waktu_datang", label: "Datang", align: "center", sortable: true },
+  { key: "waktu_pulang", label: "Pulang", align: "center", sortable: true },
+  { key: "status_validasi", label: "Status", align: "center", sortable: true, searchable: true },
+];
 
 const data = ref([]);
 const showForm = ref(false);

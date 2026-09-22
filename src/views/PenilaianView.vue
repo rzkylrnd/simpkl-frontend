@@ -5,50 +5,16 @@
       <button v-if="authStore.isPembimbingIndustri" @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Tambah</button>
     </div>
 
-    <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
-      <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
-          <tr>
-            <th class="p-3 text-left">Siswa</th>
-            <th class="p-3 text-center" title="Kehadiran, ketepatan waktu">Disiplin</th>
-            <th class="p-3 text-center" title="Menyelesaikan tugas dengan baik">Tanggung Jawab</th>
-            <th class="p-3 text-center" title="Sopan santun, perilaku">Sikap &amp; Etika</th>
-            <th class="p-3 text-center" title="Bekerja dalam tim">Kerja Sama</th>
-            <th class="p-3 text-center" title="Proaktif, mau belajar">Inisiatif</th>
-            <th class="p-3 text-center" title="Ketelitian, kualitas">Kualitas Hasil</th>
-            <th class="p-3 text-center" title="Kemampuan teknis">Kompetensi</th>
-            <th class="p-3 text-center" title="Prosedur keselamatan">K3</th>
-            <th class="p-3 text-center">Total</th>
-            <th class="p-3 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, i) in data" :key="item.id_penilaian" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row']">
-            <td class="p-3 whitespace-nowrap">{{ item.siswa?.user?.nama }}</td>
-            <td class="p-3 text-center" :class="nilaiColor(item.disiplin)">{{ item.disiplin }}</td>
-            <td class="p-3 text-center" :class="nilaiColor(item.tanggung_jawab)">{{ item.tanggung_jawab }}</td>
-            <td class="p-3 text-center" :class="nilaiColor(item.sikap_etika)">{{ item.sikap_etika }}</td>
-            <td class="p-3 text-center" :class="nilaiColor(item.kerja_sama)">{{ item.kerja_sama }}</td>
-            <td class="p-3 text-center" :class="nilaiColor(item.inisiatif)">{{ item.inisiatif }}</td>
-            <td class="p-3 text-center" :class="nilaiColor(item.kualitas_hasil)">{{ item.kualitas_hasil }}</td>
-            <td class="p-3 text-center" :class="nilaiColor(item.penguasaan)">{{ item.penguasaan }}</td>
-            <td class="p-3 text-center" :class="nilaiColor(item.keselamatan_kerja)">{{ item.keselamatan_kerja }}</td>
-            <td class="p-3 text-center font-bold" :class="nilaiColor(item.total)">{{ item.total }}</td>
-            <td class="p-3 text-center whitespace-nowrap">
-              <button @click="detail(item)" class="text-gray-600 hover:text-gray-800 mr-2" title="Detail"><i class="fas fa-eye"></i></button>
-              <button @click="cetak(item)" class="text-green-600 hover:text-green-800 mr-2" title="Cetak"><i class="fas fa-print"></i></button>
-              <template v-if="authStore.isPembimbingIndustri || authStore.isAdmin">
-                <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-                <button v-if="authStore.isAdmin" @click="hapus(item.id_penilaian)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
-              </template>
-            </td>
-          </tr>
-          <tr v-if="!data.length">
-            <td colspan="11" class="p-6 text-center" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">Tidak ada data penilaian</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <DataTable :items="data" :columns="columns" id-key="id_penilaian" actions-header="Aksi">
+      <template #actions="{ item }">
+        <button @click="detail(item)" class="text-gray-600 hover:text-gray-800 mr-2" title="Detail"><i class="fas fa-eye"></i></button>
+        <button @click="cetak(item)" class="text-green-600 hover:text-green-800 mr-2" title="Cetak"><i class="fas fa-print"></i></button>
+        <template v-if="authStore.isPembimbingIndustri || authStore.isAdmin">
+          <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+          <button v-if="authStore.isAdmin" @click="hapus(item.id_penilaian)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+        </template>
+      </template>
+    </DataTable>
 
     <!-- Form Modal -->
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="batal">
@@ -185,11 +151,25 @@ import { useThemeStore } from '../stores/theme'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
 import axios from 'axios'
+import DataTable from '../components/DataTable.vue'
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
 const notif = useNotificationStore()
 const darkMode = computed(() => themeStore.darkMode)
+
+const columns = [
+  { key: "siswa.user.nama", label: "Siswa", sortable: true, searchable: true },
+  { key: "disiplin", label: "Disiplin", align: "center", sortable: true, searchable: false, title: "Kehadiran, ketepatan waktu", class: (val) => nilaiColor(val) },
+  { key: "tanggung_jawab", label: "Tanggung Jawab", align: "center", sortable: true, searchable: false, title: "Menyelesaikan tugas dengan baik", class: (val) => nilaiColor(val) },
+  { key: "sikap_etika", label: "Sikap & Etika", align: "center", sortable: true, searchable: false, title: "Sopan santun, perilaku", class: (val) => nilaiColor(val) },
+  { key: "kerja_sama", label: "Kerja Sama", align: "center", sortable: true, searchable: false, title: "Bekerja dalam tim", class: (val) => nilaiColor(val) },
+  { key: "inisiatif", label: "Inisiatif", align: "center", sortable: true, searchable: false, title: "Proaktif, mau belajar", class: (val) => nilaiColor(val) },
+  { key: "kualitas_hasil", label: "Kualitas Hasil", align: "center", sortable: true, searchable: false, title: "Ketelitian, kualitas", class: (val) => nilaiColor(val) },
+  { key: "penguasaan", label: "Kompetensi", align: "center", sortable: true, searchable: false, title: "Kemampuan teknis", class: (val) => nilaiColor(val) },
+  { key: "keselamatan_kerja", label: "K3", align: "center", sortable: true, searchable: false, title: "Prosedur keselamatan", class: (val) => nilaiColor(val) },
+  { key: "total", label: "Total", align: "center", sortable: true, searchable: false, class: (val) => nilaiColor(val) },
+];
 
 const loading = ref(false)
 const data = ref([])

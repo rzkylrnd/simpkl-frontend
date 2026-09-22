@@ -12,59 +12,12 @@
         Tambah
       </button>
     </div>
-    <div
-      :class="[
-        'rounded-xl shadow overflow-x-auto',
-        darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card',
-      ]"
-    >
-      <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
-          <tr>
-            <th class="p-3 text-left">Nama Bidang</th>
-            <th class="p-3 text-left">Telp</th>
-            <th class="p-3 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(item, i) in data"
-            :key="item.id_tempat_pkl"
-            :class="[
-              i % 2 === 0
-                ? darkMode
-                  ? 'bg-gray-800'
-                  : 'bg-white'
-                : darkMode
-                  ? 'bg-gray-700'
-                  : 'bg-gray-50',
-              darkMode
-                ? 'hover:bg-gray-600 transition-colors'
-                : 'light-table-row',
-            ]"
-          >
-            <td class="p-3">{{ item.nama_perusahaan }}</td>
-            <td class="p-3">{{ item.telp }}</td>
-            <td class="p-3 text-center whitespace-nowrap">
-              <button
-                @click="edit(item)"
-                class="text-blue-600 hover:text-blue-800 mr-2"
-                title="Edit"
-              >
-                <i class="fas fa-edit"></i>
-              </button>
-              <button
-                @click="hapus(item.id_tempat_pkl)"
-                class="text-red-600 hover:text-red-800"
-                title="Hapus"
-              >
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <DataTable :items="data" :columns="columns" id-key="id_tempat_pkl" actions-header="Aksi">
+      <template #actions="{ item }">
+        <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+        <button @click="hapus(item.id_tempat_pkl)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+      </template>
+    </DataTable>
 
     <div
       v-if="showForm"
@@ -135,11 +88,17 @@
 import { ref, computed, onMounted } from "vue";
 import { useThemeStore } from "../stores/theme";
 import { useNotificationStore } from "../stores/notification";
+import DataTable from "../components/DataTable.vue";
 import axios from "axios";
 
 const themeStore = useThemeStore();
 const notif = useNotificationStore();
 const darkMode = computed(() => themeStore.darkMode);
+
+const columns = [
+  { key: "nama_perusahaan", label: "Nama Bidang", sortable: true, searchable: true },
+  { key: "telp", label: "Telp", sortable: true },
+];
 
 const loading = ref(false);
 const data = ref([]);

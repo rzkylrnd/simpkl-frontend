@@ -4,35 +4,19 @@
       <h3 class="text-lg font-semibold">Data Users</h3>
       <button @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Tambah</button>
     </div>
-    <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
-      <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
-          <tr>
-            <th class="p-3 text-left">Nama</th>
-            <th class="p-3 text-left">Email</th>
-            <th class="p-3 text-left">Role</th>
-            <th class="p-3 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, i) in data" :key="item.id" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-slate-50/50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row']">
-            <td class="p-3">{{ item.nama }}</td>
-            <td class="p-3">{{ item.email }}</td>
-            <td class="p-3">
-              <span :class="['px-2 py-0.5 rounded text-xs font-medium',
-                item.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                item.role === 'pembimbing_sekolah' ? 'bg-blue-100 text-blue-700' :
-                item.role === 'pembimbing_industri' ? 'bg-green-100 text-green-700' :
-                'bg-yellow-100 text-yellow-700']">{{ item.role }}</span>
-            </td>
-            <td class="p-3 text-center whitespace-nowrap">
-              <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-              <button @click="hapus(item.id)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <DataTable :items="data" :columns="columns" id-key="id" actions-header="Aksi">
+      <template #cell-role="{ item }">
+        <span :class="['px-2 py-0.5 rounded text-xs font-medium',
+          item.role === 'admin' ? 'bg-purple-100 text-purple-700' :
+          item.role === 'pembimbing_sekolah' ? 'bg-blue-100 text-blue-700' :
+          item.role === 'pembimbing_industri' ? 'bg-green-100 text-green-700' :
+          'bg-yellow-100 text-yellow-700']">{{ item.role }}</span>
+      </template>
+      <template #actions="{ item }">
+        <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+        <button @click="hapus(item.id)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+      </template>
+    </DataTable>
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="batal">
       <div :class="['w-full max-w-md mx-4 rounded-2xl max-h-[90vh] overflow-y-auto', darkMode ? 'bg-gray-800 shadow-2xl' : 'light-modal']">
         <div :class="['flex items-center justify-between px-6 py-4 border-b', darkMode ? 'border-gray-700' : 'border-gray-200']">
@@ -73,7 +57,7 @@
             </select>
           </div>
 
-          <template v-if="form.role === 'siswa'">
+          <template v-if="form.role === 'siswa' && !form.id">
             <div :class="['mb-4 pt-4 border-t', darkMode ? 'border-gray-700' : 'border-gray-200']">
               <p :class="['text-xs font-semibold uppercase tracking-wider mb-3', darkMode ? 'text-gray-400' : 'text-gray-500']">Data Siswa</p>
               <div class="mb-4">
@@ -96,19 +80,9 @@
                     :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
                 </div>
               </div>
-              <div class="mb-4">
-                <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Jurusan</label>
-                <input v-model="form.jurusan" type="text" required placeholder="Contoh: Rekayasa Perangkat Lunak"
-              :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
-          </div>
-          <div class="mb-4">
-            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Email</label>
-            <input v-model="form.email" type="text" required placeholder="Masukkan email"
-              :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
-          </div>
-          <div class="mb-4">
-            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Password <span :class="darkMode ? 'text-gray-500' : 'text-gray-400'">(isi jika ganti)</span></label>
-            <input v-model="form.password" type="password" placeholder="Minimal 6 karakter"
+<div class="mb-4">
+            <label :class="['block text-sm font-medium mb-1.5', darkMode ? 'text-gray-300' : 'text-gray-700']">Jurusan</label>
+            <input v-model="form.jurusan" type="text" required placeholder="Contoh: Rekayasa Perangkat Lunak"
               :class="['w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition', darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'light-input placeholder-gray-400']" />
           </div>
           <div class="mb-4">
@@ -169,11 +143,18 @@
 import { ref, computed, onMounted } from 'vue'
 import { useThemeStore } from '../stores/theme'
 import { useNotificationStore } from '../stores/notification'
+import DataTable from '../components/DataTable.vue'
 import axios from 'axios'
 
 const themeStore = useThemeStore()
 const notif = useNotificationStore()
 const darkMode = computed(() => themeStore.darkMode)
+
+const columns = [
+  { key: "nama", label: "Nama", sortable: true, searchable: true },
+  { key: "email", label: "Email", sortable: true, searchable: true },
+  { key: "role", label: "Role", sortable: true, searchable: true },
+];
 
 const loading = ref(false)
 const data = ref([])
@@ -253,12 +234,19 @@ async function simpan() {
       if (!/[0-9]/.test(form.value.password)) { notif.showMessage('Password harus mengandung angka', 'error'); loading.value = false; return }
       if (!/[^a-zA-Z0-9]/.test(form.value.password)) { notif.showMessage('Password harus mengandung simbol', 'error'); loading.value = false; return }
     }
-    const payload = { ...form.value }
-    if (!payload.password) delete payload.password
     if (form.value.id) {
-      await axios.put(`/api/users/${form.value.id}`, payload)
+      const payload = {
+        nama: form.value.nama,
+        email: form.value.email,
+        role: form.value.role,
+      };
+      if (form.value.password) payload.password = form.value.password;
+      await axios.put(`/api/users/${form.value.id}`, payload);
     } else {
-      await axios.post('/api/users', payload)
+      const payload = { ...form.value };
+      delete payload.id;
+      if (!payload.password) delete payload.password;
+      await axios.post('/api/users', payload);
     }
     batal()
     load()

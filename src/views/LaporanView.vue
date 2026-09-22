@@ -4,50 +4,32 @@
       <h3 class="text-lg font-semibold">Data Laporan Akhir</h3>
       <button v-if="authStore.isSiswa && !hasLaporan" @click="batal(); showForm = true" :class="['px-4 py-2 rounded-lg font-medium text-white transition-all', darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'light-btn-primary']">Tambah</button>
     </div>
-    <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
-      <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
-          <tr>
-            <th class="p-3 text-left">Siswa</th>
-            <th class="p-3 text-left">Judul</th>
-            <th class="p-3 text-left">Link</th>
-            <th class="p-3 text-left">File</th>
-            <th class="p-3 text-left">Status</th>
-            <th class="p-3 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, i) in data" :key="item.id_laporan" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row']">
-            <td class="p-3">{{ item.siswa?.user?.nama }}</td>
-            <td class="p-2 max-w-[200px] truncate">{{ item.judul_laporan }}</td>
-            <td class="p-3">
-              <a v-if="item.file_path" :href="item.file_path" target="_blank" class="text-blue-600 hover:underline">Buka Link</a>
-              <span v-else class="text-gray-400">-</span>
-            </td>
-            <td class="p-3">
-              <a v-if="item.file_upload" :href="'/storage/' + item.file_upload" target="_blank" class="text-blue-600 hover:underline">Download</a>
-              <span v-else class="text-gray-400">-</span>
-            </td>
-            <td class="p-3">
-              <span v-if="item.status_validasi === 'valid'" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Valid</span>
-              <span v-else-if="item.status_validasi === 'tidak_valid'" class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Tidak Valid</span>
-              <span v-else class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Menunggu</span>
-            </td>
-            <td class="p-3 text-center whitespace-nowrap">
-              <button @click="detail(item)" class="text-gray-600 hover:text-gray-800 mr-2" title="Detail"><i class="fas fa-eye"></i></button>
-              <button @click="cetak(item)" class="text-green-600 hover:text-green-800 mr-2" title="Cetak"><i class="fas fa-print"></i></button>
-              <template v-if="authStore.isPembimbingSekolah && item.status_validasi === 'menunggu'">
-                <button @click="validasi(item.id_laporan, 'valid')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 mr-1">Valid</button>
-                <button @click="validasi(item.id_laporan, 'tidak_valid')" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Tidak Valid</button>
-              </template>
-              <template v-if="authStore.isSiswa && item.siswa?.id_siswa === authStore.user?.siswa?.id_siswa && item.status_validasi === 'menunggu'">
-                <button @click="edit(item)" class="text-blue-600 hover:text-blue-800" title="Edit"><i class="fas fa-edit"></i></button>
-              </template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <DataTable :items="data" :columns="columns" id-key="id_laporan" actions-header="Aksi">
+      <template #cell-file_path="{ item }">
+        <a v-if="item.file_path" :href="item.file_path" target="_blank" class="text-blue-600 hover:underline">Buka Link</a>
+        <span v-else class="text-gray-400">-</span>
+      </template>
+      <template #cell-file_upload="{ item }">
+        <a v-if="item.file_upload" :href="'/storage/' + item.file_upload" target="_blank" class="text-blue-600 hover:underline">Download</a>
+        <span v-else class="text-gray-400">-</span>
+      </template>
+      <template #cell-status_validasi="{ item }">
+        <span v-if="item.status_validasi === 'valid'" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Valid</span>
+        <span v-else-if="item.status_validasi === 'tidak_valid'" class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Tidak Valid</span>
+        <span v-else class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Menunggu</span>
+      </template>
+      <template #actions="{ item }">
+        <button @click="detail(item)" class="text-gray-600 hover:text-gray-800 mr-2" title="Detail"><i class="fas fa-eye"></i></button>
+        <button @click="cetak(item)" class="text-green-600 hover:text-green-800 mr-2" title="Cetak"><i class="fas fa-print"></i></button>
+        <template v-if="authStore.isPembimbingSekolah && item.status_validasi === 'menunggu'">
+          <button @click="validasi(item.id_laporan, 'valid')" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 mr-1">Valid</button>
+          <button @click="validasi(item.id_laporan, 'tidak_valid')" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Tidak Valid</button>
+        </template>
+        <template v-if="authStore.isSiswa && item.siswa?.id_siswa === authStore.user?.siswa?.id_siswa && item.status_validasi === 'menunggu'">
+          <button @click="edit(item)" class="text-blue-600 hover:text-blue-800" title="Edit"><i class="fas fa-edit"></i></button>
+        </template>
+      </template>
+    </DataTable>
 
     <!-- Form Modal -->
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="batal">
@@ -166,11 +148,20 @@ import { useThemeStore } from '../stores/theme'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
 import axios from 'axios'
+import DataTable from '../components/DataTable.vue'
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
 const notif = useNotificationStore()
 const darkMode = computed(() => themeStore.darkMode)
+
+const columns = [
+  { key: "siswa.user.nama", label: "Siswa", sortable: true, searchable: true },
+  { key: "judul_laporan", label: "Judul", sortable: true, searchable: true },
+  { key: "file_path", label: "Link", align: "center" },
+  { key: "file_upload", label: "File", align: "center" },
+  { key: "status_validasi", label: "Status", align: "center", sortable: true, searchable: true },
+];
 
 const loading = ref(false)
 const data = ref([])

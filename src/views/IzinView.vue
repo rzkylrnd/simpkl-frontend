@@ -9,73 +9,48 @@
       >Tambah</button>
     </div>
 
-    <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
-      <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
-          <tr>
-            <th class="p-3 text-left">No</th>
-            <th class="p-3 text-left">Siswa</th>
-            <th class="p-3 text-left">Tanggal</th>
-            <th class="p-3 text-left">Jenis</th>
-            <th class="p-3 text-left">Keterangan</th>
-            <th class="p-3 text-left">Bukti</th>
-            <th class="p-3 text-center">Status</th>
-            <th class="p-3 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, i) in data" :key="item.id_izin"
-            :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row']">
-            <td class="p-3">{{ i + 1 }}</td>
-            <td class="p-3">{{ item.siswa?.user?.nama }}</td>
-            <td class="p-3">{{ item.tanggal }}</td>
-            <td class="p-3">
-              <span :class="['px-2 py-1 rounded text-xs font-bold', item.jenis === 'sakit' ? (darkMode ? 'bg-red-600 text-white' : 'bg-red-100 text-red-700') : (darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700')]">
-                {{ item.jenis === 'sakit' ? 'Sakit' : 'Izin' }}
-              </span>
-            </td>
-            <td class="p-3 max-w-xs truncate" :title="item.keterangan">{{ item.keterangan || '-' }}</td>
-            <td class="p-3">
-              <a v-if="item.file_path" :href="item.file_url" target="_blank" class="text-blue-600 hover:underline">
-                <i class="fas fa-file-pdf mr-1"></i>Lihat
-              </a>
-              <span v-else class="text-gray-400">-</span>
-            </td>
-            <td class="p-3 text-center">
-              <span v-if="item.status_validasi === 'valid'" class="inline-flex items-center bg-green-100 text-green-700 px-2.5 py-1 rounded-md text-xs font-bold">Diterima</span>
-              <span v-else-if="item.status_validasi === 'tidak_valid'" class="inline-flex items-center bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-bold">Ditolak</span>
-              <span v-else class="inline-flex items-center bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-md text-xs">Menunggu</span>
-            </td>
-            <td class="p-3 text-center whitespace-nowrap">
-              <template v-if="authStore.isPembimbingIndustri && item.status_validasi === 'menunggu'">
-                <button @click="validasi(item.id_izin, 'valid')" class="bg-green-600 text-white px-2.5 py-1 rounded-md text-xs hover:bg-green-700 font-semibold mr-1">Terima</button>
-                <button @click="validasi(item.id_izin, 'tidak_valid')" class="bg-red-500 text-white px-2.5 py-1 rounded-md text-xs hover:bg-red-600 font-semibold">Tolak</button>
-              </template>
-              <template v-else-if="authStore.isSiswa">
-                <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                <template v-if="item.status_validasi === 'menunggu'">
-                  <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-                  <button @click="hapus(item.id_izin)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
-                </template>
-              </template>
-              <template v-else-if="authStore.isAdmin">
-                <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-              </template>
-              <template v-else-if="authStore.isPembimbingSekolah">
-                <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
-                <button v-if="item.status_validasi === 'menunggu' || item.status_validasi === 'valid'" @click="tolak(item.id_izin)" class="bg-red-500 text-white px-2.5 py-1 rounded-md text-xs hover:bg-red-600 font-semibold">
-                  {{ item.status_validasi === 'valid' ? 'Batalkan' : 'Tolak' }}
-                </button>
-              </template>
-              <span v-else :class="['text-xs', darkMode ? 'text-gray-500' : 'text-gray-400']">-</span>
-            </td>
-          </tr>
-          <tr v-if="!data.length">
-            <td colspan="8" class="p-6 text-center" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">Tidak ada data pengajuan izin</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <DataTable :items="data" :columns="columns" id-key="id_izin" actions-header="Aksi">
+      <template #cell-jenis="{ item }">
+        <span :class="['px-2 py-1 rounded text-xs font-bold', item.jenis === 'sakit' ? (darkMode ? 'bg-red-600 text-white' : 'bg-red-100 text-red-700') : (darkMode ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700')]">
+          {{ item.jenis === 'sakit' ? 'Sakit' : 'Izin' }}
+        </span>
+      </template>
+      <template #cell-keterangan="{ item }">
+        <span class="max-w-xs block truncate" :title="item.keterangan">{{ item.keterangan || '-' }}</span>
+      </template>
+      <template #cell-file_path="{ item }">
+        <a v-if="item.file_path" :href="item.file_url" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-file-pdf mr-1"></i>Lihat</a>
+        <span v-else class="text-gray-400">-</span>
+      </template>
+      <template #cell-status_validasi="{ item }">
+        <span v-if="item.status_validasi === 'valid'" class="inline-flex items-center bg-green-100 text-green-700 px-2.5 py-1 rounded-md text-xs font-bold">Diterima</span>
+        <span v-else-if="item.status_validasi === 'tidak_valid'" class="inline-flex items-center bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-bold">Ditolak</span>
+        <span v-else class="inline-flex items-center bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-md text-xs">Menunggu</span>
+      </template>
+      <template #actions="{ item }">
+        <template v-if="authStore.isPembimbingIndustri && item.status_validasi === 'menunggu'">
+          <button @click="validasi(item.id_izin, 'valid')" class="bg-green-600 text-white px-2.5 py-1 rounded-md text-xs hover:bg-green-700 font-semibold mr-1">Terima</button>
+          <button @click="validasi(item.id_izin, 'tidak_valid')" class="bg-red-500 text-white px-2.5 py-1 rounded-md text-xs hover:bg-red-600 font-semibold">Tolak</button>
+        </template>
+        <template v-else-if="authStore.isSiswa">
+          <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+          <template v-if="item.status_validasi === 'menunggu'">
+            <button @click="edit(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
+            <button @click="hapus(item.id_izin)" class="text-red-600 hover:text-red-800" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+          </template>
+        </template>
+        <template v-else-if="authStore.isAdmin">
+          <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+        </template>
+        <template v-else-if="authStore.isPembimbingSekolah">
+          <button @click="showDetail(item)" class="text-blue-600 hover:text-blue-800 mr-2" title="Lihat Detail"><i class="fas fa-eye"></i></button>
+          <button v-if="item.status_validasi === 'menunggu' || item.status_validasi === 'valid'" @click="tolak(item.id_izin)" class="bg-red-500 text-white px-2.5 py-1 rounded-md text-xs hover:bg-red-600 font-semibold">
+            {{ item.status_validasi === 'valid' ? 'Batalkan' : 'Tolak' }}
+          </button>
+        </template>
+        <span v-else :class="['text-xs', darkMode ? 'text-gray-500' : 'text-gray-400']">-</span>
+      </template>
+    </DataTable>
 
     <!-- Form Modal -->
     <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="batal">
@@ -160,11 +135,21 @@ import { useThemeStore } from "../stores/theme";
 import { useAuthStore } from "../stores/auth";
 import { useNotificationStore } from "../stores/notification";
 import axios from "axios";
+import DataTable from "../components/DataTable.vue";
 
 const themeStore = useThemeStore();
 const authStore = useAuthStore();
 const notif = useNotificationStore();
 const darkMode = ref(themeStore.darkMode);
+
+const columns = [
+  { key: "siswa.user.nama", label: "Siswa", sortable: true, searchable: true },
+  { key: "tanggal", label: "Tanggal", sortable: true, searchable: true },
+  { key: "jenis", label: "Jenis", align: "center", sortable: true, searchable: true },
+  { key: "keterangan", label: "Keterangan", searchable: true },
+  { key: "file_path", label: "Bukti", align: "center" },
+  { key: "status_validasi", label: "Status", align: "center", sortable: true, searchable: true },
+];
 
 const data = ref([]);
 const showForm = ref(false);

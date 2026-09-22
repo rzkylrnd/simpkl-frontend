@@ -3,33 +3,12 @@
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Data Siswa</h3>
     </div>
-    <div :class="['rounded-xl shadow overflow-x-auto', darkMode ? 'bg-gray-800 border border-gray-700' : 'light-card']">
-      <table class="w-full text-sm">
-        <thead :class="darkMode ? 'bg-gray-700' : 'light-table-header'">
-          <tr>
-            <th class="p-3 text-left">Nama</th>
-            <th class="p-3 text-left">NIS</th>
-            <th class="p-3 text-left">Sekolah</th>
-            <th class="p-3 text-left">Kelas</th>
-            <th class="p-3 text-left">Jurusan</th>
-            <th class="p-3 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, i) in data" :key="item.id_siswa" :class="[i % 2 === 0 ? (darkMode ? 'bg-gray-800' : 'bg-white') : (darkMode ? 'bg-gray-700' : 'bg-gray-50'), darkMode ? 'hover:bg-gray-600 transition-colors' : 'light-table-row']">
-            <td class="p-3">{{ item.user?.nama }}</td>
-            <td class="p-3">{{ item.nis }}</td>
-            <td class="p-3">{{ item.sekolah?.nama_sekolah }}</td>
-            <td class="p-3">{{ item.kelas }}</td>
-            <td class="p-3">{{ item.jurusan }}</td>
-            <td class="p-3 text-center">
-              <button @click="detail(item)" class="text-gray-600 hover:text-gray-800 mr-2" title="Detail"><i class="fas fa-eye"></i></button>
-              <button @click="edit(item)" class="text-blue-600 hover:text-blue-800" title="Edit"><i class="fas fa-edit"></i></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <DataTable :items="data" :columns="columns" id-key="id_siswa" actions-header="Aksi">
+      <template #actions="{ item }">
+        <button @click="detail(item)" class="text-gray-600 hover:text-gray-800 mr-2" title="Detail"><i class="fas fa-eye"></i></button>
+        <button @click="edit(item)" class="text-blue-600 hover:text-blue-800" title="Edit"><i class="fas fa-edit"></i></button>
+      </template>
+    </DataTable>
 
     <!-- Detail Modal -->
     <div v-if="showDetail" class="fixed inset-0 bg-black/50 flex items-center justify-center z-30" @click.self="showDetail = false">
@@ -115,11 +94,20 @@
 import { ref, computed, onMounted } from 'vue'
 import { useThemeStore } from '../stores/theme'
 import { useNotificationStore } from '../stores/notification'
+import DataTable from '../components/DataTable.vue'
 import axios from 'axios'
 
 const themeStore = useThemeStore()
 const notif = useNotificationStore()
 const darkMode = computed(() => themeStore.darkMode)
+
+const columns = [
+  { key: "user.nama", label: "Nama", sortable: true, searchable: true },
+  { key: "nis", label: "NIS", sortable: true, searchable: true },
+  { key: "sekolah.nama_sekolah", label: "Sekolah", sortable: true, searchable: true },
+  { key: "kelas", label: "Kelas", sortable: true, searchable: true },
+  { key: "jurusan", label: "Jurusan", sortable: true, searchable: true },
+];
 
 const data = ref([])
 const showDetail = ref(false)
