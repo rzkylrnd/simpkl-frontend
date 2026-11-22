@@ -1,6 +1,6 @@
-# SIMPKL — Sistem Informasi Manajemen Praktik Kerja Lapangan
+# SIMPKL — Sistem Informasi Monitoring Praktik Kerja Lapangan
 
-SIMPKL adalah aplikasi web untuk membantu pengelolaan kegiatan Praktik Kerja Lapangan (PKL). Aplikasi ini dipakai oleh admin, siswa, pembimbing sekolah, dan pembimbing industri untuk mencatat kegiatan harian, memantau kemajuan, memvalidasi data, dan melihat hasil penilaian. Aplikasi berjalan di browser dan terhubung ke backend SIMPKL API yang dijalankan terpisah.
+SIMPKL adalah aplikasi web untuk membantu monitoring kegiatan Praktik Kerja Lapangan (PKL). Aplikasi ini dipakai oleh admin, siswa, pembimbing sekolah, dan pembimbing industri untuk mencatat kegiatan harian, memantau kemajuan, memvalidasi data, dan melihat hasil penilaian. Aplikasi berjalan di browser dan terhubung ke backend SIMPKL API yang dijalankan terpisah.
 
 ## Fitur Utama
 
