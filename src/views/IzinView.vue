@@ -131,16 +131,14 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useThemeStore } from "../stores/theme";
 import { useAuthStore } from "../stores/auth";
 import { useNotificationStore } from "../stores/notification";
 import axios from "axios";
 import DataTable from "../components/DataTable.vue";
 
-const themeStore = useThemeStore();
 const authStore = useAuthStore();
 const notif = useNotificationStore();
-const darkMode = ref(themeStore.darkMode);
+const darkMode = false;
 
 const columns = [
   { key: "siswa.user.nama", label: "Siswa", sortable: true, searchable: true },

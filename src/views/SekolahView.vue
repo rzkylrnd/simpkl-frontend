@@ -84,14 +84,11 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { useThemeStore } from "../stores/theme";
 import { useNotificationStore } from "../stores/notification";
 import DataTable from "../components/DataTable.vue";
 import axios from "axios";
-
-const themeStore = useThemeStore();
 const notif = useNotificationStore();
-const darkMode = computed(() => themeStore.darkMode);
+const darkMode = false;
 
 const columns = [
   { key: "nama_sekolah", label: "Nama Sekolah", sortable: true, searchable: true },

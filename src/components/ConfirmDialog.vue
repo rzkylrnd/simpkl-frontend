@@ -4,8 +4,8 @@
       <div class="fixed inset-0 bg-black/50" @click="$emit('cancel')"></div>
       <div :class="['relative z-10 w-full max-w-sm mx-4 rounded-2xl shadow-2xl p-6', darkMode ? 'bg-gray-800' : 'bg-white border border-gray-100']">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400"></i>
+          <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+            <i class="fas fa-exclamation-triangle text-red-600"></i>
           </div>
           <div>
             <h4 class="font-semibold">{{ title }}</h4>
@@ -23,7 +23,6 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useThemeStore } from '../stores/theme'
 
 const props = defineProps({
   show: Boolean,
@@ -32,9 +31,7 @@ const props = defineProps({
 })
 
 defineEmits(['confirm', 'cancel'])
-
-const themeStore = useThemeStore()
-const darkMode = computed(() => themeStore.darkMode)
+const darkMode = false
 </script>
 
 <style scoped>

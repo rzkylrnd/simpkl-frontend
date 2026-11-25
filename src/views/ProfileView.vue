@@ -81,12 +81,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
-import { useThemeStore } from '../stores/theme'
 import axios from 'axios'
 
 const authStore = useAuthStore()
-const themeStore = useThemeStore()
-const darkMode = computed(() => themeStore.darkMode)
+const darkMode = false
 const showEdit = ref(false)
 const showPassword = ref(false)
 const editForm = ref({ nama: authStore.user?.nama || '', email: authStore.user?.email || '', id_sekolah: authStore.user?.siswa?.id_sekolah || '' })

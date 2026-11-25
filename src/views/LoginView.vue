@@ -6,7 +6,7 @@
           <i class="fas fa-graduation-cap"></i>
         </div>
         <h2 :class="['text-2xl font-bold', darkMode ? 'text-white' : 'text-gray-800']">SIMPKL</h2>
-        <p :class="['text-sm mt-1', darkMode ? 'text-gray-400' : 'text-gray-500']">Sistem Informasi Praktek Kerja Lapangan</p>
+        <p :class="['text-sm mt-1', darkMode ? 'text-gray-400' : 'text-gray-500']">Sistem Informasi Monitoring Praktek Kerja Lapangan</p>
       </div>
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
@@ -39,10 +39,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { useThemeStore } from '../stores/theme'
-
-const themeStore = useThemeStore()
-const darkMode = computed(() => themeStore.darkMode)
+const darkMode = false
 
 const email = ref('')
 const password = ref('')

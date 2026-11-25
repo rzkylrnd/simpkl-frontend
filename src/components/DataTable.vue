@@ -124,7 +124,6 @@
 
 <script setup>
 import { ref, computed, watch, useSlots } from 'vue'
-import { useThemeStore } from '../stores/theme'
 
 const props = defineProps({
   items: { type: Array, default: () => [] },
@@ -143,9 +142,7 @@ const props = defineProps({
 const emit = defineEmits(['update:selected'])
 
 const slots = useSlots()
-
-const themeStore = useThemeStore()
-const darkMode = computed(() => themeStore.darkMode)
+const darkMode = false
 
 const search = ref('')
 const pageSize = ref(10)

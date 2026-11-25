@@ -99,7 +99,6 @@
                 ? "Presensi " + (presensiType === "masuk" ? "Masuk" : "Pulang")
                 : "Tambah"
           }}
-          Presensi
         </h3>
         <form @submit.prevent="simpan">
           <div class="mb-3">
@@ -292,16 +291,14 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { useThemeStore } from "../stores/theme";
 import { useAuthStore } from "../stores/auth";
 import { useNotificationStore } from "../stores/notification";
 import axios from "axios";
 import DataTable from "../components/DataTable.vue";
 
 const authStore = useAuthStore();
-const themeStore = useThemeStore();
 const notif = useNotificationStore();
-const darkMode = computed(() => themeStore.darkMode);
+const darkMode = false;
 
 const columns = [
   { key: "siswa.user.nama", label: "Siswa", sortable: true, searchable: true },
