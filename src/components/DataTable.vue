@@ -83,7 +83,7 @@
         </tr>
         <tr v-if="!tableRows.length">
           <td :colspan="columns.length + (selectable ? 1 : 0) + (actionsHeader ? 1 : 0)" class="p-6 text-center" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">
-            {{ search.trim() ? 'Tidak ada data yang cocok' : emptyText }}
+            {{ debouncedSearch.trim() ? 'Tidak ada data yang cocok' : emptyText }}
           </td>
         </tr>
       </tbody>
@@ -123,7 +123,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, useSlots } from 'vue'
+import { ref, computed, watch, useSlots, onBeforeUnmount } from 'vue'
 
 const props = defineProps({
   items: { type: Array, default: () => [] },
@@ -145,6 +145,14 @@ const slots = useSlots()
 const darkMode = false
 
 const search = ref('')
+const debouncedSearch = ref('')
+let searchTimer
+watch(search, (v) => {
+  clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => { debouncedSearch.value = v }, 300)
+})
+onBeforeUnmount(() => clearTimeout(searchTimer))
+
 const pageSize = ref(10)
 const current = ref(1)
 const sortKey = ref('')
@@ -202,7 +210,7 @@ function toggleAllSelected() {
 }
 
 const filtered = computed(() => {
-  const q = search.value.trim().toLowerCase()
+  const q = debouncedSearch.value.trim().toLowerCase()
   if (!q) return props.items
   const searchable = props.columns.filter((c) => c.searchable !== false)
   return props.items.filter((item) => {
@@ -262,7 +270,7 @@ function goPage(p) {
   current.value = Math.min(Math.max(p, 1), pageCount.value)
 }
 
-watch([search, pageSize], () => {
+watch([debouncedSearch, pageSize], () => {
   current.value = 1
 })
 
