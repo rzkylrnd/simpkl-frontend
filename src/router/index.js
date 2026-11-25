@@ -84,6 +84,11 @@ const routes = [
         component: () => import("../views/IzinView.vue"),
       },
       {
+        path: "about",
+        name: "About",
+        component: () => import("../views/AboutUsView.vue"),
+      },
+      {
         path: "profile",
         name: "Profile",
         component: () => import("../views/ProfileView.vue"),

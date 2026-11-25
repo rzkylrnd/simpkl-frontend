@@ -44,15 +44,15 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { useThemeStore } from '../stores/theme'
 
 defineEmits(['close'])
 
+const route = useRoute()
 const authStore = useAuthStore()
-const themeStore = useThemeStore()
-const darkMode = computed(() => themeStore.darkMode)
+const darkMode = false
 
 const menuGroups = [
   {
@@ -93,6 +93,7 @@ const menuGroups = [
     title: 'Akun',
     items: [
       { path: '/profile', label: 'Profile', icon: '<i class="fas fa-user"></i>', roles: ['admin', 'siswa', 'pembimbing_sekolah', 'pembimbing_industri'] },
+      { path: '/about', label: 'About Us', icon: '<i class="fas fa-info-circle"></i>', roles: ['admin', 'siswa', 'pembimbing_sekolah', 'pembimbing_industri'] },
     ],
   },
 ]
@@ -108,10 +109,52 @@ const filteredMenu = computed(() => {
 })
 
 const expanded = ref({})
+
+function isAdmin() {
+  return authStore.user?.role === 'admin'
+}
+
+function findGroupForPath(path) {
+  for (const group of filteredMenu.value) {
+    if (group.items.some(item => item.path === path)) return group.title
+  }
+  return null
+}
+
+function initExpanded() {
+  if (!isAdmin()) {
+    const obj = {}
+    for (const g of filteredMenu.value) obj[g.title] = true
+    expanded.value = obj
+    return
+  }
+  const activeGroup = findGroupForPath(route.path)
+  const obj = {}
+  for (const g of filteredMenu.value) {
+    obj[g.title] = g.title === activeGroup
+  }
+  expanded.value = obj
+}
+
+onMounted(initExpanded)
+watch(() => route.path, initExpanded)
+watch(() => authStore.user?.role, (role) => {
+  if (role) initExpanded()
+})
+
 function isExpanded(title) {
   return expanded.value[title] !== false
 }
+
 function toggleGroup(title) {
-  expanded.value[title] = isExpanded(title) ? false : true
+  if (!isAdmin()) {
+    expanded.value[title] = !isExpanded(title)
+    return
+  }
+  const wasOpen = isExpanded(title)
+  const obj = {}
+  for (const g of filteredMenu.value) obj[g.title] = false
+  if (!wasOpen) obj[title] = true
+  expanded.value = obj
 }
 </script>
